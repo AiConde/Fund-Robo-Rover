@@ -77,7 +77,7 @@ classdef Lidar  < handle
 
         function angles = lidar_scan(obj)
             [A] = FunRoboLidarScan(obj.lidar_obj);
-            obj.last_scan_angles_tstamp = posixtime(datetime(now,'ConvertFrom','datenum')); % Horrible hack to get POSIX timestamp
+            obj.last_scan_angles_tstamp = Utils.get_current_time();
             angles = A;
             obj.last_scan_angles = A;
         end
