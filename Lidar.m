@@ -21,7 +21,7 @@ classdef Lidar  < handle
             % TODO
         end
 
-        function cartesian_points = polar_to_cartesian(angles)
+        function cartesian_points = polar_to_cartesian(angles) % should this take ranges, too?
             % TODO
         end
     end % End static methods
