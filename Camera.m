@@ -78,7 +78,7 @@ classdef Camera < handle
         end
 
         function [img_undistorted, new_image_origin] = undistort_image(obj, img)
-            [img_undistorted, new_image_origin] = undistortImage(img, obj.camera_intrinsics);
+            [img_undistorted, new_image_origin] = undistortImage(img, obj.camera_intrinsics, "OutputView","same");
         end
 
     end % End classmethods
