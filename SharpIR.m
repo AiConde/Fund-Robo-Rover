@@ -1,3 +1,4 @@
+% sharp IR class
 classdef SharpIR < handle
     % Sharp IR class object. Represents a single SharpIR sensor.
     
@@ -17,7 +18,6 @@ classdef SharpIR < handle
         %% static methods
     end % End static methods
 
-    
     methods
         %% class methods
 
@@ -28,4 +28,3 @@ classdef SharpIR < handle
     end % End classmethods
 
 end % End class
-
