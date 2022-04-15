@@ -48,23 +48,28 @@ classdef Lidar  < handle
             end
 
             obj.lidar_obj = serial(com_port, 'baudrate', 115200);
-            set(obj.lidar_obj, 'Timeout', 2); % TODO test with 0.1
-            set(obj.lidar_obj, 'InputBufferSize', 20000); % TODO test with 40000
-            set(obj.lidar_obj, 'Terminator', 'LF/CR'); % TODO test with CR
+            set(obj.lidar_obj, 'Timeout', 0.1); % TODO test with 0.1
+            set(obj.lidar_obj, 'InputBufferSize', 40000); % TODO test with 40000
+            set(obj.lidar_obj, 'Terminator', 'CR'); % TODO test with CR
 
             fopen(obj.lidar_obj);
-            pause(0.3);
+            pause(0.1);
+
             fprintf(obj.lidar_obj, 'SCIP2.0');
-            pause(0.3);
+            pause(0.1);
+
             fscanf(obj.lidar_obj);
             fprintf(obj.lidar_obj, 'VV');
-            pause(0.3);
+            pause(0.1);
+
             fscanf(obj.lidar_obj);
             fprintf(obj.lidar_obj, 'BM');
-            pause(0.3);
-            fscanf(obj.lidar_obj);
-            fprintf(obj.lidar_obj, 'MD0044072500'); %TODO this may be unnecessary
-            pause(0.3);
+            pause(0.1);
+
+            %fscanf(obj.lidar_obj);
+            %fprintf(obj.lidar_obj, 'MD0044072500'); %TODO this may be unnecessary
+            %pause(0.3);
+
             fscanf(obj.lidar_obj);
         end
 
@@ -76,7 +81,7 @@ classdef Lidar  < handle
         end
 
         function angles = lidar_scan(obj)
-            [A] = FunRoboLidarScan(obj.lidar_obj);
+            [A] = LidarScan(obj.lidar_obj);
             obj.last_scan_angles_tstamp = Utils.get_current_time();
             angles = A;
             obj.last_scan_angles = A;
@@ -145,11 +150,31 @@ classdef Lidar  < handle
             for k=1:size(encodeddist,1)
                 rangescan(k)=decodeSCIP(encodeddist(k,:));
             end
+        end
 
-
-
-
-
+        function [rangescan]=LidarScan(lidar)
+            proceed=0;
+            while (proceed==0)
+                fprintf(lidar,'GD0044072500');
+                pause(0.01);
+                data=fscanf(lidar);
+                if numel(data)==2134
+                    proceed=1;
+                end
+            end
+            i=find(data==data(13));
+            rangedata=data(i(3)+1:end-1);
+            for j=0:31
+                onlyrangedata((64*j)+1:(64*j)+64)=rangedata(1+(66*j):64+(66*j));
+            end
+            j=0;
+            for i=1:floor(numel(onlyrangedata)/3)
+                encodeddist(i,:)=[onlyrangedata((3*j)+1) onlyrangedata((3*j)+2) onlyrangedata((3*j)+3)];
+                j=j+1;
+            end
+            for k=1:size(encodeddist,1)
+                rangescan(k)=decodeSCIP(encodeddist(k,:));
+            end
         end
 
     end % End classmethods
