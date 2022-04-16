@@ -1,22 +1,6 @@
 classdef Lidar_ROS < handle
     % Lidar class object. Represents a Hokuyo lidar we access over ROS
 
-    properties
-        %% class properties
-    end % End class properties
-
-    properties (Dependent)
-        %% getter properties
-    end % End getter properties
-
-    methods
-        %% getter methods
-    end % End getter methods
-
-    methods (Static)
-        %% static methods
-    end % End static methods
-
     properties  (Access = private)
         %% private class properties
         lidar_sub
@@ -29,10 +13,6 @@ classdef Lidar_ROS < handle
 
         laserscan_raw
     end % End clas
-
-    properties(Constant)
-        %% Constant properties
-    end
 
     methods
         %% class methods
