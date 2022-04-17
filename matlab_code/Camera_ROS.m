@@ -3,7 +3,6 @@ classdef Camera_ROS < handle
 
     properties
         %% class properties
-        last_image % Last image we captured
     end % End class properties
 
     properties (Dependent)
@@ -21,6 +20,7 @@ classdef Camera_ROS < handle
     properties  (Access = private)
         %% private class properties
         camera_sub % MATLAB camera object
+        last_image_msg % Last image we captured
     end % End clas
     properties (SetAccess = private)
         camera_intrinsics % Calibrated camera intrinsics - read only from outside the class
@@ -31,7 +31,7 @@ classdef Camera_ROS < handle
 
         %% Class constructor
         function obj = Camera_ROS(camera_intrinsics)
-		obj.camera_sub = rossubscriber("/usb_cam/image_raw", @obj.Callback_Image, "DataFormat", "struct");
+		obj.camera_sub = rossubscriber("/usb_cam/image_compressed", @obj.Callback_Image, "DataFormat", "struct");
             obj.camera_intrinsics = camera_intrinsics;
         end
 
@@ -40,8 +40,13 @@ classdef Camera_ROS < handle
         end
 
 	    function Callback_Image(obj, sub, imagedata)
-		    obj.last_image = rosReadImage(imagedata);
+            obj.last_image_msg = imagedata;
+		    %obj.last_image = rosReadImage(imagedata);
 	    end
+
+        function img = get_image_raw(obj)
+            img = rosReadImage(obj.last_image_msg);
+        end
 
 
         function [img_undistorted, new_image_origin] = undistort_image(obj, img)
