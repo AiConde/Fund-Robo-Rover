@@ -31,7 +31,7 @@ classdef Camera_ROS < handle
 
         %% Class constructor
         function obj = Camera_ROS(camera_intrinsics)
-		obj.camera_sub = rossubscriber("/usb_cam/image_compressed", @obj.Callback_Image, "DataFormat", "struct");
+		obj.camera_sub = rossubscriber("/usb_cam/image_raw/compressed", @obj.Callback_Image, "DataFormat", "struct");
             obj.camera_intrinsics = camera_intrinsics;
         end
 

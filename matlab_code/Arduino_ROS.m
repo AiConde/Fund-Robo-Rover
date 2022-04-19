@@ -35,9 +35,9 @@ classdef Arduino_ROS < handle
             obj.sonar_array_sub = rossubscriber("/arduino_data/sonar_array", @obj.Callback_Sonar, "DataFormat", "struct");
             obj.tacometer_sub = rossubscriber("/arduino_data/tacometer", @obj.Callback_Tacometer, "DataFormat", "struct");
 
-            obj.esc_pwm_pub = rospublisher("/arduino_cmd/throttle", "std_msgs/Float32", "DataFormat", "struct");
-            obj.steer_servo_pub = rospublisher("/arduino_cmd/steer", "std_msgs/Float32", "DataFormat", "struct");
-            obj.pan_servo_pub = rospublisher("/arduino_cmd/pan", "std_msgs/Float32", "DataFormat", "struct");
+            obj.esc_pwm_pub = rospublisher("/arduino_cmd/throttle", "std_msgs/Float32");
+            obj.steer_servo_pub = rospublisher("/arduino_cmd/steer", "std_msgs/Float32");
+            obj.pan_servo_pub = rospublisher("/arduino_cmd/pan", "std_msgs/Float32");
 
             obj.write_esc_pwm(0.5);
             obj.write_steer_servo(0.5);
