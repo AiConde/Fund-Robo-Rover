@@ -21,6 +21,9 @@ classdef Camera_ROS < handle
         %% private class properties
         camera_sub % MATLAB camera object
         last_image_msg % Last image we captured
+
+        new_image_available % Update whenever we recieve a new image
+        img_cache % Last decoded image
     end % End clas
     properties (SetAccess = private)
         camera_intrinsics % Calibrated camera intrinsics - read only from outside the class
@@ -31,7 +34,8 @@ classdef Camera_ROS < handle
 
         %% Class constructor
         function obj = Camera_ROS(camera_intrinsics)
-		obj.camera_sub = rossubscriber("/usb_cam/image_raw/compressed", @obj.Callback_Image, "DataFormat", "struct");
+		    obj.camera_sub = rossubscriber("/usb_cam/image_raw/compressed", @obj.Callback_Image, "DataFormat", "struct");
+            obj.new_image_available = false;
             obj.camera_intrinsics = camera_intrinsics;
         end
 
@@ -40,12 +44,23 @@ classdef Camera_ROS < handle
         end
 
 	    function Callback_Image(obj, sub, imagedata)
+            obj.new_image_available = true;
             obj.last_image_msg = imagedata;
 		    %obj.last_image = rosReadImage(imagedata);
 	    end
 
+        function is_new_image = is_new_image_available(obj)
+            is_new_image = obj.new_image_available;
+        end
+
         function img = get_image_raw(obj)
-            img = rosReadImage(obj.last_image_msg);
+            if (obj.new_image_available)
+                obj.new_image_available = false;
+                img = rosReadImage(obj.last_image_msg);
+                img_cache = img;
+            else
+                img = img_cache;
+            end
         end
 
 

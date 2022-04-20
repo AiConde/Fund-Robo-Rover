@@ -11,6 +11,12 @@ classdef Arduino_ROS < handle
         tacometer_count_msg
         imu_output_msg
 
+        %% T/F flags to check if we've recieved new data
+        new_ir_data
+        new_sonar_data
+        new_tacometer_data
+        new_imu_data
+
 
         %% Subscriber objects
         imu_sub
@@ -42,6 +48,11 @@ classdef Arduino_ROS < handle
             obj.write_esc_pwm(0.5);
             obj.write_steer_servo(0.5);
             obj.write_pan_servo(0.5);
+
+            obj.new_ir_data = false;
+            obj.new_sonar_data = false;
+            obj.new_tacometer_data = false;
+            obj.new_imu_data = false;
         end
 
         %% Class destructor
@@ -57,15 +68,19 @@ classdef Arduino_ROS < handle
         end
 
         function Callback_Imu(obj, sub, imudata)
+            obj.new_imu_data = true;
             obj.imu_output_msg = imudata;
         end
         function Callback_IR(obj, sub, irdata)
+            obj.new_ir_data = true;
             obj.ir_voltages_msg = irdata;
         end
         function Callback_Sonar(obj, sub, sonardata)
+            obj.new_sonar_data = true;
             obj.sonar_voltages_msg = sonardata;
         end
         function Callback_Tacometer(obj, sub, tacometerdata)
+            obj.new_tacometer_data = true;
             obj.tacometer_count_msg = tacometerdata;
         end
 
@@ -86,14 +101,23 @@ classdef Arduino_ROS < handle
         end
 
         function ir_array = get_ir_voltages(obj) 
+            if (obj.new_ir_data)
+                obj.new_ir_data = false;
+            end
             ir_array = obj.ir_voltages_msg.Data;
         end
 
         function sonar_array = get_sonar_voltages(obj) 
+            if (obj.new_sonar_data)
+                obj.new_sonar_data = false;
+            end
             sonar_array = obj.sonar_voltages_msg.Data;
         end
 
         function [accel_xyz, gyro_xyz] = get_imu_output(obj) 
+            if (obj.new_imu_data)
+                obj.new_imu_data = false;
+            end
             accel_x = obj.imu_output_msg.LinearAcceleration.X;
             accel_y = obj.imu_output_msg.LinearAcceleration.Y;
             accel_z = obj.imu_output_msg.LinearAcceleration.Z;
@@ -105,7 +129,23 @@ classdef Arduino_ROS < handle
         end
 
         function tacometer_count = get_tacometer_output(obj)
+            if (obj.new_tacometer_data)
+                obj.new_tacometer_data = false;
+            end
             tacometer_count = obj.tacometer_count_msg.Data;
+        end
+
+        function is_new_data = is_new_ir_data_available() 
+            is_new_data = obj.new_ir_data;
+        end
+        function is_new_data = is_new_sonar_data_available() 
+            is_new_data = obj.new_sonar_data;
+        end
+        function is_new_data = is_new_imu_data_available() 
+            is_new_data = obj.new_imu_data;
+        end
+        function is_new_data = is_new_sonar_data_available() 
+            is_new_data = obj.new_sonar_data;
         end
 
 

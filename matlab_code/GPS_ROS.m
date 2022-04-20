@@ -26,6 +26,9 @@ classdef GPS_ROS < handle
 
         imu_output_msg
         fix_output_msg
+
+        new_imu_data
+        new_fix_data
     end % End getter properties
 
     methods
@@ -44,6 +47,8 @@ classdef GPS_ROS < handle
         function obj = GPS_ROS()
             obj.fix_sub = rossubscriber("/ublox_gps/fix", @obj.Callback_Fix, "DataFormat", "struct");
             obj.imu_sub = rossubscriber("/ublox_gps/imu_meas", @obj.Callback_Imu, "DataFormat", "struct");
+            obj.new_imu_data = false;
+            obj.new_fix_data = false;
         end
 
         function delete(obj)
@@ -59,6 +64,9 @@ classdef GPS_ROS < handle
         end
 
         function [lat, long, alt, lat_covariance, long_covariance, alt_covariance] = get_fix_data(obj)
+            if (obj.new_fix_data)
+                obj.new_fix_data = false;
+            end
             lat = obj.fix_output_msg.Latitude;
             long = obj.fix_output_msg.Longitude;
             alt = obj.fix_output_msg.Altitude;
@@ -68,6 +76,9 @@ classdef GPS_ROS < handle
         end
 
         function [accel_xyz, gyro_xyz] = get_imu_output(obj) 
+            if (obj.new_imu_data)
+                obj.new_imu_data = false;
+            end
             accel_x = obj.imu_output_msg.LinearAcceleration.X;
             accel_y = obj.imu_output_msg.LinearAcceleration.Y;
             accel_z = obj.imu_output_msg.LinearAcceleration.Z;
@@ -76,6 +87,13 @@ classdef GPS_ROS < handle
             gyro_z = obj.imu_output_msg.AngularVelocity.Z;
             accel_xyz = [accel_x accel_y accel_z];
             gyro_xyz = [gyro_x gyro_y gyro_z]; 
+        end
+
+        function is_new_data = is_new_fix_data_available() 
+            is_new_data = obj.new_fix_data;
+        end
+        function is_new_data = is_new_imu_data_available() 
+            is_new_data = obj.new_imu_data;
         end
 
 
