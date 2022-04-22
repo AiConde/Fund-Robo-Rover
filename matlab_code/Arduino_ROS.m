@@ -10,19 +10,21 @@ classdef Arduino_ROS < handle
         sonar_voltages_msg
         tacometer_count_msg
         imu_output_msg
+        mag_output_msg 
 
         %% T/F flags to check if we've recieved new data
         new_ir_data
         new_sonar_data
         new_tacometer_data
         new_imu_data
-
+        new_mag_data
 
         %% Subscriber objects
         imu_sub
         ir_array_sub
         sonar_array_sub
         tacometer_sub
+        magnetometer_sub
 
         %% Publisher objects
         esc_pwm_pub
@@ -40,6 +42,7 @@ classdef Arduino_ROS < handle
             obj.ir_array_sub = rossubscriber("/arduino_data/ir_array", @obj.Callback_IR, "DataFormat", "struct");
             obj.sonar_array_sub = rossubscriber("/arduino_data/sonar_array", @obj.Callback_Sonar, "DataFormat", "struct");
             obj.tacometer_sub = rossubscriber("/arduino_data/tacometer", @obj.Callback_Tacometer, "DataFormat", "struct");
+            obj.magnetometer_sub = rossubscriber("/arduino_data/magnetometer", @obj.Callback_Magnetometer, "DataFormat", "struct");
 
             obj.esc_pwm_pub = rospublisher("/arduino_cmd/throttle", "std_msgs/Float32");
             obj.steer_servo_pub = rospublisher("/arduino_cmd/steer", "std_msgs/Float32");
@@ -70,6 +73,10 @@ classdef Arduino_ROS < handle
         function Callback_Imu(obj, sub, imudata)
             obj.new_imu_data = true;
             obj.imu_output_msg = imudata;
+        end
+        function Callback_Magnetometer(obj, sub, magdata)
+            obj.new_mag_data = true;
+            obj.mag_output_msg = magdata;
         end
         function Callback_IR(obj, sub, irdata)
             obj.new_ir_data = true;
@@ -130,6 +137,15 @@ classdef Arduino_ROS < handle
             gyro_xyz = [gyro_x gyro_y gyro_z]; 
         end
 
+        function mag_xyz = get_mag_output(obj) 
+            if (obj.new_mag_data)
+                obj.new_mag_data = false;
+            end
+            mag_x = obj.mag_output_msg.MagneticField.X;
+            mag_y = obj.mag_output_msg.MagneticField.Y;
+            mag_z = obj.mag_output_msg.MagneticField.Z;
+        end
+
         function tacometer_count = get_tacometer_output(obj)
             if (obj.new_tacometer_data)
                 obj.new_tacometer_data = false;
@@ -148,6 +164,9 @@ classdef Arduino_ROS < handle
         end
         function is_new_data = is_new_sonar_data_available() 
             is_new_data = obj.new_sonar_data;
+        end
+        function is_new_data = is_new_mag_data_available() 
+            is_new_data = obj.new_mag_data;
         end
 
 

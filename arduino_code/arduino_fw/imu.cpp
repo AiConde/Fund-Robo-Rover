@@ -32,6 +32,12 @@ void init() {
   lsm.setupMag(lsm.LSM9DS1_MAGGAIN_4GAUSS);
   lsm.setupGyro(lsm.LSM9DS1_GYROSCALE_245DPS);
 
+
+  //lsm.write8(Adafruit_LSM9DS1::XGTYPE, 0x10, 0b01100011); // Config gyroscope with 119Hz datarate, 31Hz filter cutoff, and 245deg/s full scale output (see CTRL_REG1_G)
+  //lsm.write8(Adafruit_LSM9DS1::XGTYPE, 0x20, 0b01100000); // Config accelerometer with 119Hz datarate and 50Hz filter cutoff (see CTRL_REG6_XL)
+  //Adafruit_LIS3MDL sens_mag = lsm.getMag();
+  
+
   last_read_timestamp_micros = get_time_micros_safe();
 }
 
@@ -44,7 +50,7 @@ void read_loop_1khz() {
 
   sensors_event_t a, m, g, temp;
   lsm.getEvent(&a, &m, &g, &temp); 
-  
+
   last_imu_reading.accel_x = a.acceleration.x;
   last_imu_reading.accel_y = a.acceleration.y;
   last_imu_reading.accel_z = a.acceleration.z;

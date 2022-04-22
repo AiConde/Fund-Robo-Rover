@@ -16,6 +16,7 @@
 #include <std_msgs/Float32.h>
 #include <std_msgs/Float32MultiArray.h>
 #include <sensor_msgs/Imu.h>
+#include <sensor_msgs/MagneticField.h>
 
 void esc_servo_callback(const std_msgs::Float32 &cmd_msg) {
   led::toggle();
@@ -35,9 +36,11 @@ ros::Subscriber<std_msgs::Float32> steer_servo_sub("/arduino_cmd/steer", steer_s
 ros::Subscriber<std_msgs::Float32> pan_servo_sub("/arduino_cmd/pan", pan_servo_callback);
 
 sensor_msgs::Imu imu_msg;
+sensor_msgs::MagneticField mag_msg;
 std_msgs::Float32MultiArray ir_msg;
 std_msgs::Float32MultiArray sonar_msg;
 std_msgs::UInt32 tacometer_count;
+
 
 #define IR_MSG_BUFFER_SIZE 6
 #define SONAR_MSG_BUFFER_SIZE 2
@@ -45,6 +48,7 @@ float ir_msg_buffer[IR_MSG_BUFFER_SIZE];
 float sonar_msg_buffer[SONAR_MSG_BUFFER_SIZE];
 
 ros::Publisher pub_imu("/arduino_data/imu", &imu_msg);
+ros::Publisher pub_mag("/arduino_data/magnetometer", &mag_msg);
 ros::Publisher pub_ir("/arduino_data/ir_array", &ir_msg);
 ros::Publisher pub_sonar("/arduino_data/sonar_array", &sonar_msg);
 ros::Publisher pub_tacometer("/arduino_data/tacometer", &tacometer_count);
@@ -109,10 +113,18 @@ void setup() {
   imu_msg.linear_acceleration.y = -1.f;
   imu_msg.linear_acceleration.z = -1.f;
 
+  for (uint8_t i = 0; i < 9; i++) {
+    mag_msg.magnetic_field_covariance[i] = 0.f;
+  }
+  mag_msg.magnetic_field.x = -1.f;
+  mag_msg.magnetic_field.y = -1.f;
+  mag_msg.magnetic_field.z = -1.f;
+
   loop_start_us_10Hz = get_time_micros_safe();
   loop_start_us_100Hz = loop_start_us_10Hz;
 
   nh.advertise(pub_imu);
+  nh.advertise(pub_mag);
   nh.advertise(pub_sonar);
   nh.advertise(pub_ir);
   nh.advertise(pub_tacometer);
@@ -121,17 +133,14 @@ void setup() {
   nh.subscribe(steer_servo_sub);
   nh.subscribe(pan_servo_sub);
 
-  
-}
 
-uint32_t taco_count_dummy = 0;
+}
 
 void loop_100hz() {
   sharpir::read_loop_100hz();
   sonar::read_loop_100hz();
   imu::read_loop_1khz();
 
-  taco_count_dummy++;
 
 
   imu::imu_reading_t imu_reading_buf;
@@ -140,19 +149,28 @@ void loop_100hz() {
   imu::get_readings_raw(&imu_reading_buf);
 
 
+  // Convert deg/s to rad/s
+  imu_msg.angular_velocity.x = imu_reading_buf.gyro_x * 0.017453f;
+  imu_msg.angular_velocity.y = imu_reading_buf.gyro_y * 0.017453f;
+  imu_msg.angular_velocity.z = imu_reading_buf.gyro_z * 0.017453f;
 
-  imu_msg.angular_velocity.x = imu_reading_buf.gyro_x;
-  imu_msg.angular_velocity.y = imu_reading_buf.gyro_y;
-  imu_msg.angular_velocity.z = imu_reading_buf.gyro_z;
+  // Convert gees to m/s
+  imu_msg.linear_acceleration.x = imu_reading_buf.accel_x*9.8066f;
+  imu_msg.linear_acceleration.y = imu_reading_buf.accel_y*9.8066f;
+  imu_msg.linear_acceleration.z = imu_reading_buf.accel_z*9.8066f;
 
-  imu_msg.linear_acceleration.x = imu_reading_buf.accel_x;
-  imu_msg.linear_acceleration.y = imu_reading_buf.accel_y;
-  imu_msg.linear_acceleration.z = imu_reading_buf.accel_z;
+  // Convert gauss to tesla
+  mag_msg.magnetic_field.x = imu_reading_buf.mag_x / 10000.f;
+  mag_msg.magnetic_field.y = imu_reading_buf.mag_y / 10000.f;
+  mag_msg.magnetic_field.z = imu_reading_buf.mag_z / 10000.f;
 
-  tacometer_count.data = taco_count_dummy;
+  tacometer::tacometer_readings_t taco_readings;
+  tacometer::get_count(&taco_readings);
+  tacometer_count.data = taco_readings.tacometer_count;
 
 
   pub_imu.publish(&imu_msg);
+  pub_mag.publish(&mag_msg);
 
   pub_tacometer.publish(&tacometer_count);
 
