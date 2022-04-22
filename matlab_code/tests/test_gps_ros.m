@@ -5,8 +5,6 @@ gps = GPS_ROS();
 
 pause(1)
 
-%pp = quiver3(0,0,0,0,0,0);
-
 while (1)
 
     [lat, long, alt, lat_covariance, long_covariance, alt_covariance] = ...
@@ -23,8 +21,6 @@ while (1)
     text(0, 1, "GPS Location", "FontSize", 26);
     hold off;
 
-    %pp = quiver3(0, 0, 0, vec(1), vec(2), vec(3));
-    %pause(0.1);
 end
 
 

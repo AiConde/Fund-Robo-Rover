@@ -89,11 +89,13 @@ classdef Arduino_ROS < handle
             pub_msg.Data = esc_pwm_value;
             send(obj.esc_pwm_pub, pub_msg);
         end
+
         function write_steer_servo(obj, steer_servo_value) 
             pub_msg = rosmessage(obj.steer_servo_pub);
             pub_msg.Data = steer_servo_value;
             send(obj.steer_servo_pub, pub_msg);
         end
+
         function write_pan_servo(obj, pan_servo_value) 
             pub_msg = rosmessage(obj.pan_servo_pub);
             pub_msg.Data = pan_servo_value;
