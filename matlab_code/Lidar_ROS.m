@@ -55,7 +55,6 @@ classdef Lidar_ROS < handle
             obj.angle_increment = scandata.AngleIncrement;
             obj.ranges = scandata.Ranges;
             obj.laserscan_raw = scandata;
-
         end
 
         %{
