@@ -19,7 +19,6 @@
 #include <sensor_msgs/MagneticField.h>
 
 void esc_servo_callback(const std_msgs::Float32 &cmd_msg) {
-  led::toggle();
   servos::servos_write(cmd_msg.data, servos::ESC_PWM);
 }
 void pan_servo_callback(const std_msgs::Float32 &cmd_msg) {
@@ -65,6 +64,9 @@ const uint32_t loop_period_us_10Hz = 100000; // 100 ms = 10Hz
 void setup() {
   analogReadResolution(12);
 
+  Serial.begin(115200);
+  nh.getHardware()->setBaud(115200);
+
   led::setup();
   led::set(false);
 
@@ -73,7 +75,7 @@ void setup() {
   sonar::init();
   tacometer::init();
   imu::init();
-  serial_comms::init();
+  //serial_comms::init();
 
   led::set(true);
 
