@@ -1,38 +1,14 @@
 classdef Lidar_ROS < handle
     % Lidar class object. Represents a Hokuyo lidar we access over ROS
 
-    properties
-        %% class properties
-    end % End class properties
-
-    properties (Dependent)
-        %% getter properties
-    end % End getter properties
-
-    methods
-        %% getter methods
-    end % End getter methods
-
-    methods (Static)
-        %% static methods
-    end % End static methods
-
     properties  (Access = private)
         %% private class properties
         lidar_sub
-        range_min
-        range_max
-        angle_min
-        angle_max
-        angle_increment
-        ranges
 
         laserscan_raw
-    end % End clas
 
-    properties(Constant)
-        %% Constant properties
-    end
+        new_laser_data
+    end % End clas
 
     methods
         %% class methods
@@ -40,6 +16,7 @@ classdef Lidar_ROS < handle
         %% Class constructor
         function obj = Lidar_ROS(com_port)
             obj.lidar_sub = rossubscriber("/scan", @obj.Callback_Laser, "DataFormat", "struct");
+            obj.new_laser_data = false;
         end
 
         %% Class destructor
@@ -48,43 +25,35 @@ classdef Lidar_ROS < handle
         end
 
         function Callback_Laser(obj, sub, scandata)
-            obj.range_min = scandata.RangeMin;
-            obj.range_max = scandata.RangeMax;
-            obj.angle_min = scandata.AngleMin;
-            obj.angle_max = scandata.AngleMax;
-            obj.angle_increment = scandata.AngleIncrement;
-            obj.ranges = scandata.Ranges;
             obj.laserscan_raw = scandata;
-
+            obj.new_laser_data = true;
         end
-
-        %{
-        function angles = lidar_scan(obj)
-            obj.ranges = receive(obj.lidar_sub,1);
-            obj.range_min = scandata.RangeMin;
-            obj.range_max = scandata.RangeMax;
-            obj.angle_min = scandata.AngleMin;
-            obj.angle_max = scandata.AngleMax;
-            obj.angle_increment = scandata.AngleIncrement;
-            obj.ranges = scandata.Ranges;
-        end
-        %}
 
         function [angles, ranges] = get_scandata(obj)
+            if (obj.new_laser_data)
+                obj.new_laser_data = false;
+            end
             angles = rosReadScanAngles(obj.laserscan_raw);
             ranges = obj.laserscan_raw.Ranges;
         end
 
         function laserScan = get_scandata_raw(obj)
+            if (obj.new_laser_data)
+                obj.new_laser_data = false;
+            end
             laserScan = obj.laserscan_raw;
+        end
+        
+        function is_new_data = is_new_laserscan_available() 
+            is_new_data = obj.new_laser_data;
         end
 
         function [ranges_min, ranges_max, angle_min, angle_max, angle_increment] = get_scanparams(obj)
-            ranges_min = obj.range_min;
-            ranges_max = obj.range_max;
-            angle_min = obj.angle_min;
-            angle_max = obj.angle_max;
-            angle_increment = obj.angle_increment;
+            ranges_min = obj.laserscan_raw.RangeMin;
+            ranges_max = obj.laserscan_raw.RangeMax;
+            angle_min = obj.laserscan_raw.AngleMin;
+            angle_max = obj.laserscan_raw.AngleMax;
+            angle_increment = obj.laserscan_raw.AngleIncrement;
         end
 
 
