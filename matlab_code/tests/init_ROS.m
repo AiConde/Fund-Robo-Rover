@@ -13,7 +13,7 @@ function init_ROS(varargin)
 
     ros_uri = Defaults{1};
     
-    rosinit(ros_uri, "NodeName", "ben_grant")
+    rosinit(ros_uri)
 
     disp("ROS initialization complete! :-)")
 end

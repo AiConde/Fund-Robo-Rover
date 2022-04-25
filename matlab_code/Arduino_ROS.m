@@ -73,6 +73,7 @@ classdef Arduino_ROS < handle
         function Callback_Imu(obj, sub, imudata)
             obj.new_imu_data = true;
             obj.imu_output_msg = imudata;
+%             disp(obj.imu_output_msg.LinearAcceleration)
         end
         function Callback_Magnetometer(obj, sub, magdata)
             obj.new_mag_data = true;
