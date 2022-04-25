@@ -158,19 +158,19 @@ void loop_100hz() {
 
 
   // Convert deg/s to rad/s
-  imu_msg.angular_velocity.x = imu_reading_buf.gyro_x * 0.017453f;
-  imu_msg.angular_velocity.y = imu_reading_buf.gyro_y * 0.017453f;
-  imu_msg.angular_velocity.z = imu_reading_buf.gyro_z * 0.017453f;
+  imu_msg.angular_velocity.x = imu_reading_buf.gyro_x * 1.0f;
+  imu_msg.angular_velocity.y = imu_reading_buf.gyro_y * 1.0f;
+  imu_msg.angular_velocity.z = imu_reading_buf.gyro_z * 1.0f;
 
   // Convert gees to m/s
-  imu_msg.linear_acceleration.x = imu_reading_buf.accel_x*9.8066f;
-  imu_msg.linear_acceleration.y = imu_reading_buf.accel_y*9.8066f;
-  imu_msg.linear_acceleration.z = imu_reading_buf.accel_z*9.8066f;
+  imu_msg.linear_acceleration.x = imu_reading_buf.accel_x*1.0f;
+  imu_msg.linear_acceleration.y = imu_reading_buf.accel_y*1.0f;
+  imu_msg.linear_acceleration.z = imu_reading_buf.accel_z*1.0f;
 
   // Convert gauss to tesla
-  mag_msg.magnetic_field.x = imu_reading_buf.mag_x / 10000.f;
-  mag_msg.magnetic_field.y = imu_reading_buf.mag_y / 10000.f;
-  mag_msg.magnetic_field.z = imu_reading_buf.mag_z / 10000.f;
+  mag_msg.magnetic_field.x = imu_reading_buf.mag_x * 0.000001f;
+  mag_msg.magnetic_field.y = imu_reading_buf.mag_y * 0.000001f;
+  mag_msg.magnetic_field.z = imu_reading_buf.mag_z * 0.000001f;
 
   tacometer::tacometer_readings_t taco_readings;
   tacometer::get_count(&taco_readings);
