@@ -11,14 +11,14 @@ classdef Arduino_ROS < handle
         tacometer_count_msg
         imu_output_msg
         mag_output_msg 
-
-        %% T/F flags to check if we've recieved new data
+        
+        %% boolean flags to check if we've recieved new data
         new_ir_data
         new_sonar_data
         new_tacometer_data
         new_imu_data
         new_mag_data
-
+        
         %% Subscriber objects
         imu_sub
         ir_array_sub
@@ -70,6 +70,8 @@ classdef Arduino_ROS < handle
             clear obj.pan_servo_pub;
         end
 
+        %% callback methods
+
         function Callback_Imu(obj, sub, imudata)
             obj.new_imu_data = true;
             obj.imu_output_msg = imudata;
@@ -91,6 +93,8 @@ classdef Arduino_ROS < handle
             obj.tacometer_count_msg = tacometerdata;
         end
 
+        %% Act methods
+
         function write_esc_pwm(obj, esc_pwm_value) 
             pub_msg = rosmessage(obj.esc_pwm_pub);
             pub_msg.Data = esc_pwm_value;
@@ -108,6 +112,8 @@ classdef Arduino_ROS < handle
             pub_msg.Data = pan_servo_value;
             send(obj.pan_servo_pub, pub_msg);
         end
+
+        %% Sense methods (IR, Sonar, IMU, Magnetometer, Tachometer)
 
         function ir_array = get_ir_voltages(obj) 
             if (obj.new_ir_data)
@@ -152,6 +158,19 @@ classdef Arduino_ROS < handle
             end
             tacometer_count = obj.tacometer_count_msg.Data;
         end
+
+        %% calibration methods
+
+        function calibrate_imu(obj)
+            % collect a bunch of imu readings
+            num_readings = 100;
+            accel_cal = 
+            for i = 1:num_readings
+
+            end
+        end
+
+        %% new data methods
 
         function is_new_data = is_new_ir_data_available() 
             is_new_data = obj.new_ir_data;
