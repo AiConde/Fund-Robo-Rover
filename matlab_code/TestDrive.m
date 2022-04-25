@@ -51,6 +51,7 @@ while (run_loop)
     arduino.write_esc_pwm(throttle_servo_units);
     arduino.write_steer_servo(steer_servo_units);
     arduino.write_pan_servo(pan_servo_units);
+    %disp(throttle_servo_units, steer_servo_units
 
     waitfor(r);
 end
