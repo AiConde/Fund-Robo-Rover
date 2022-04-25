@@ -42,7 +42,7 @@ classdef Arduino_ROS < handle
             obj.ir_array_sub = rossubscriber("/arduino_data/ir_array", @obj.Callback_IR, "DataFormat", "struct");
             obj.sonar_array_sub = rossubscriber("/arduino_data/sonar_array", @obj.Callback_Sonar, "DataFormat", "struct");
             obj.tacometer_sub = rossubscriber("/arduino_data/tacometer", @obj.Callback_Tacometer, "DataFormat", "struct");
-            obj.magnetometer_sub = rossubscriber("/arduino_data/magnetometer", @obj.Callback_Magnetometer, "DataFormat", "struct");
+%             obj.magnetometer_sub = rossubscriber("/arduino_data/magnetometer", @obj.Callback_Magnetometer, "DataFormat", "struct");
 
             obj.esc_pwm_pub = rospublisher("/arduino_cmd/throttle", "std_msgs/Float32");
             obj.steer_servo_pub = rospublisher("/arduino_cmd/steer", "std_msgs/Float32");
@@ -161,9 +161,6 @@ classdef Arduino_ROS < handle
         end
         function is_new_data = is_new_imu_data_available() 
             is_new_data = obj.new_imu_data;
-        end
-        function is_new_data = is_new_sonar_data_available() 
-            is_new_data = obj.new_sonar_data;
         end
         function is_new_data = is_new_mag_data_available() 
             is_new_data = obj.new_mag_data;

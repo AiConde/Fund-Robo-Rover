@@ -1,14 +1,14 @@
-clear
-rosshutdown % Clear any existing ROS connection
+%% testing MATLAB / ROS / URG Lidar sense integration
 
-% Initialize ROS connection
-ROS_URI = 'http://192.168.34.152:11311/';
-rosinit(ROS_URI)
+% Setup ROS connection to the NUC
+init_ROS
 
+% Create lidar object
 lidar = Lidar_ROS();
 
 pause(1)
 
+% collect and plot lidar scans
 while (1)
     pause(0.1);
     %rosPlot(lidar.get_scandata_raw);
