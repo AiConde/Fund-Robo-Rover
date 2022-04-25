@@ -14,7 +14,7 @@ then
     echo "roscore already running, skipping..."
 else
     echo "starting roscore"
-    screen -d -m roscore
+    screen -S "roscore" -d -m "source $HOME/.bashrc; roscore"
 fi
 sleep 2
 

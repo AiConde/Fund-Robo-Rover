@@ -39,6 +39,8 @@ sensor_msgs::MagneticField mag_msg;
 std_msgs::Float32MultiArray ir_msg;
 std_msgs::Float32MultiArray sonar_msg;
 std_msgs::UInt32 tacometer_count;
+std_msgs::UInt32 esc_pwm_us;
+
 
 
 #define IR_MSG_BUFFER_SIZE 6
@@ -51,6 +53,9 @@ ros::Publisher pub_mag("/arduino_data/magnetometer", &mag_msg);
 ros::Publisher pub_ir("/arduino_data/ir_array", &ir_msg);
 ros::Publisher pub_sonar("/arduino_data/sonar_array", &sonar_msg);
 ros::Publisher pub_tacometer("/arduino_data/tacometer", &tacometer_count);
+
+ros::Publisher pub_escfb("/arduino_data/esc_pwm_us", &esc_pwm_us);
+
 
 
 //ir_msg.data_length = 6;
@@ -130,6 +135,7 @@ void setup() {
   nh.advertise(pub_sonar);
   nh.advertise(pub_ir);
   nh.advertise(pub_tacometer);
+  nh.advertise(pub_escfb);
 
   nh.subscribe(esc_servo_sub);
   nh.subscribe(steer_servo_sub);
@@ -174,7 +180,7 @@ void loop_100hz() {
   pub_imu.publish(&imu_msg);
   pub_mag.publish(&mag_msg);
 
-  pub_tacometer.publish(&tacometer_count);
+  pub_escfb.publish(&esc_pwm_us);
 
 
 }
@@ -195,6 +201,8 @@ void loop_10hz() {
   sonar_msg_buffer[1] = sonar_reading_buf.sonar2_voltage;
   pub_sonar.publish(&sonar_msg);
   pub_ir.publish(&ir_msg);
+  
+  pub_tacometer.publish(&tacometer_count);
 }
 
 void loop_1khz() {

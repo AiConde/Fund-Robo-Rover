@@ -1,5 +1,9 @@
 #include "servos.h"
 #include <Servo.h>
+#include <std_msgs/UInt32.h>
+
+
+extern std_msgs::UInt32 esc_pwm_us;
 
 namespace servos {
 
@@ -43,6 +47,7 @@ namespace servos {
 
         switch(servo) {
             case ESC_PWM:
+                esc_pwm_us.data = servo_pwm_us;
                 esc_pwm_servo.writeMicroseconds(servo_pwm_us);
                 break;
             case SERVO_PAN:
