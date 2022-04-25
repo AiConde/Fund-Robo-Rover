@@ -8,6 +8,7 @@ function init_ROS(varargin)
     % Initialize ROS connection
 
     Defaults = {'http://192.168.16.72:11311/'};
+%     Defaults = {'http://localhost:11311/'};
     Defaults(1:nargin) = varargin;
 
     ros_uri = Defaults{1};
