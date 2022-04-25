@@ -2,7 +2,7 @@ clear
 rosshutdown % Clear any existing ROS connection
 
 % Initialize ROS connection
-ROS_URI = 'http://192.168.34.152:11311/';
+ROS_URI = ['http://192.168.16.72:11311/'];
 rosinit(ROS_URI)
 
 lidar = Lidar_ROS();

@@ -162,9 +162,9 @@ classdef Arduino_ROS < handle
         function is_new_data = is_new_imu_data_available() 
             is_new_data = obj.new_imu_data;
         end
-        function is_new_data = is_new_sonar_data_available() 
-            is_new_data = obj.new_sonar_data;
-        end
+%         function is_new_data = is_new_sonar_data_available() 
+%             is_new_data = obj.new_sonar_data;
+%         end
         function is_new_data = is_new_mag_data_available() 
             is_new_data = obj.new_mag_data;
         end
