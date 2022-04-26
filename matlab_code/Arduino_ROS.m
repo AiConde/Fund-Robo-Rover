@@ -42,7 +42,7 @@ classdef Arduino_ROS < handle
             obj.ir_array_sub = rossubscriber("/arduino_data/ir_array", @obj.Callback_IR, "DataFormat", "struct");
             obj.sonar_array_sub = rossubscriber("/arduino_data/sonar_array", @obj.Callback_Sonar, "DataFormat", "struct");
             obj.tacometer_sub = rossubscriber("/arduino_data/tacometer", @obj.Callback_Tacometer, "DataFormat", "struct");
-%             obj.magnetometer_sub = rossubscriber("/arduino_data/magnetometer", @obj.Callback_Magnetometer, "DataFormat", "struct");
+            obj.magnetometer_sub = rossubscriber("/arduino_data/magnetometer", @obj.Callback_Magnetometer, "DataFormat", "struct");
 
             obj.esc_pwm_pub = rospublisher("/arduino_cmd/throttle", "std_msgs/Float32");
             obj.steer_servo_pub = rospublisher("/arduino_cmd/steer", "std_msgs/Float32");
@@ -75,7 +75,6 @@ classdef Arduino_ROS < handle
         function Callback_Imu(obj, sub, imudata)
             obj.new_imu_data = true;
             obj.imu_output_msg = imudata;
-%             disp(obj.imu_output_msg.LinearAcceleration)
         end
         function Callback_Magnetometer(obj, sub, magdata)
             obj.new_mag_data = true;
@@ -148,9 +147,10 @@ classdef Arduino_ROS < handle
             if (obj.new_mag_data)
                 obj.new_mag_data = false;
             end
-            mag_x = obj.mag_output_msg.MagneticField.X;
-            mag_y = obj.mag_output_msg.MagneticField.Y;
-            mag_z = obj.mag_output_msg.MagneticField.Z;
+            mag_x = obj.mag_output_msg.MagneticField_.X;
+            mag_y = obj.mag_output_msg.MagneticField_.Y;
+            mag_z = obj.mag_output_msg.MagneticField_.Z;
+            mag_xyz = [mag_x, mag_y, mag_z];
         end
 
         function tacometer_count = get_tacometer_output(obj)
@@ -172,6 +172,7 @@ classdef Arduino_ROS < handle
             
             % collect a bunch of imu readings
             for i = 1:num_readings
+                waitfor(obj.new_imu_data);
                 [accel_reading, gyro_reading] = obj.get_imu_output();
                 mag_reading = obj.get_mag_output();
 
