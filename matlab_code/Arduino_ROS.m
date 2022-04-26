@@ -162,13 +162,29 @@ classdef Arduino_ROS < handle
 
         %% calibration methods
 
-        function calibrate_imu(obj)
-            % collect a bunch of imu readings
+        function [accel_offset, gyro_offset] = calibrate_imu(obj)
             num_readings = 100;
-            accel_cal = 
-            for i = 1:num_readings
 
+            % empty lists for collecting calibration readings
+            accel_cal = zeros(num_readings, 3);
+            gyro_cal  = zeros(num_readings, 3);
+            mag_cal   = zeros(num_readings, 3);
+            
+            % collect a bunch of imu readings
+            for i = 1:num_readings
+                [accel_reading, gyro_reading] = obj.get_imu_output();
+                mag_reading = obj.get_mag_output();
+
+                accel_cal(i, :) = accel_reading;
+                mag_cal(i, :)   = mag_reading;
+                gyro_cal(i, :)  = gyro_reading;
             end
+
+            % get average accel offset
+            obj.accel_offset = mean(accel_cal) - [0, 0, 9.81];
+            
+            % get average gyro offset
+            obj.gyro_offset = mean(gyro_cal);
         end
 
         %% new data methods
