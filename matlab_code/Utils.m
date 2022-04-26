@@ -12,6 +12,17 @@ classdef Utils
             x_out = (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
         end
 
+        %% Clamps a value between val_min and val_max
+        function x_out = clamp(val, val_min, val_max)
+            if (val < val_min) 
+                x_out = val_min;
+            else if (val > val_max)
+                x_out = val_max;
+            else
+                x_out = val;
+            end
+        end
+
     end % End static methods
 end
 

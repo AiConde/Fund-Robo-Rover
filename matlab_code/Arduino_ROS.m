@@ -33,6 +33,31 @@ classdef Arduino_ROS < handle
 
     end % End clas
 
+    properties
+        last_esc_pwm
+        last_steer_angle
+        last_pan_angle
+        last_steer_pwm
+        last_pan_pwm
+    end
+    
+    methods (Static)
+        %% Takes in target steering angle in degrees, outputs the corresponding servo value
+        function servo_pwm = steer_angle_to_servo(steer_angle)
+            steer_angle_min = -30;
+            steer_angle_max = 30;
+            steer_angle_clamped = Utils.clamp(steer_angle, steer_angle_min, steer_angle_max);
+            servo_pwm = Utils.map(steer_angle_clamped, steer_angle_min, steer_angle_max, 0.0, 1.0);
+        end
+        %% Takes in target pan angle in degrees, outputs the corresponding servo value
+        function servo_pwm = pan_angle_to_servo(pan_angle)
+            pan_angle_min = -150;
+            pan_angle_max = 150;
+            pan_angle_clamped = Utils.clamp(pan_angle, pan_angle_min, pan_angle_max);
+            servo_pwm = Utils.map(pan_angle_clamped, pan_angle_min, pan_angle_max, 0.0, 1.0);
+        end
+    end
+
     methods
         %% class methods
 
@@ -96,21 +121,36 @@ classdef Arduino_ROS < handle
         %% Act methods
 
         function write_esc_pwm(obj, esc_pwm_value) 
+            obj.last_esc_pwm = esc_pwm_value;
             pub_msg = rosmessage(obj.esc_pwm_pub);
             pub_msg.Data = esc_pwm_value;
             send(obj.esc_pwm_pub, pub_msg);
         end
 
         function write_steer_servo(obj, steer_servo_value) 
+            obj.last_steer_pwm = steer_servo_value;
             pub_msg = rosmessage(obj.steer_servo_pub);
             pub_msg.Data = steer_servo_value;
             send(obj.steer_servo_pub, pub_msg);
         end
 
         function write_pan_servo(obj, pan_servo_value) 
+            obj.last_pan_pwm = pan_servo_value;
             pub_msg = rosmessage(obj.pan_servo_pub);
             pub_msg.Data = pan_servo_value;
             send(obj.pan_servo_pub, pub_msg);
+        end
+        
+        function write_steer_servo_angle(obj, steer_servo_angle) 
+            obj.last_steer_angle = steer_servo_angle;
+            pwm = Arduino_ROS.steer_angle_to_servo(steer_servo_angle);
+            obj.write_steer_servo(pwm);
+        end
+
+        function write_pan_servo_angle(obj, pan_servo_angle) 
+            obj.last_pan_angle = pan_servo_angle;
+            pwm = Arduino_ROS.pan_angle_to_servo(pan_servo_angle);
+            obj.write_pan_servo(pwm);
         end
 
         %% Sense methods (IR, Sonar, IMU, Magnetometer, Tachometer)
@@ -182,7 +222,7 @@ classdef Arduino_ROS < handle
             end
 
             % get average accel offset
-            obj.accel_offset = mean(accel_cal) - [0, 0, 9.81];
+            obj.accel_offset = mean(accel_cal) - [0, 0, 9.80665];
             
             % get average gyro offset
             obj.gyro_offset = mean(gyro_cal);
