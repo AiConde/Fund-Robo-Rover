@@ -18,7 +18,13 @@
 #include <sensor_msgs/Imu.h>
 #include <sensor_msgs/MagneticField.h>
 
+bool is_esc_enabled = false;
+uint32_t last_esc_cmd_timestamp_ms = 0;
+uint32_t esc_cmd_timeout_ms = 1000;
+
 void esc_servo_callback(const std_msgs::Float32 &cmd_msg) {
+  is_esc_enabled = true;
+  last_esc_cmd_timestamp_ms = millis();
   servos::servos_write(cmd_msg.data, servos::ESC_PWM);
 }
 void pan_servo_callback(const std_msgs::Float32 &cmd_msg) {
@@ -65,6 +71,8 @@ const uint32_t loop_period_us_100Hz = 10000; // 10 ms = 100Hz
 
 uint32_t loop_start_us_10Hz;
 const uint32_t loop_period_us_10Hz = 100000; // 100 ms = 10Hz
+
+
 
 void setup() {
   analogReadResolution(12);
@@ -203,6 +211,13 @@ void loop_10hz() {
   pub_ir.publish(&ir_msg);
   
   pub_tacometer.publish(&tacometer_count);
+
+  if (is_esc_enabled) {
+    if (millis() > last_esc_cmd_timestamp_ms + esc_cmd_timeout_ms) {
+      is_esc_enabled = false;
+      servos::servos_write(0.5, servos::ESC_PWM);
+    }
+  }
 }
 
 void loop_1khz() {

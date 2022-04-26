@@ -31,6 +31,8 @@ classdef Arduino_ROS < handle
         steer_servo_pub
         pan_servo_pub
 
+        tacometer_offset
+
     end % End clas
 
     properties
@@ -81,6 +83,8 @@ classdef Arduino_ROS < handle
             obj.new_sonar_data = false;
             obj.new_tacometer_data = false;
             obj.new_imu_data = false;
+
+            obj.tacometer_offset = 0;
         end
 
         %% Class destructor
@@ -197,7 +201,7 @@ classdef Arduino_ROS < handle
             if (obj.new_tacometer_data)
                 obj.new_tacometer_data = false;
             end
-            tacometer_count = obj.tacometer_count_msg.Data;
+            tacometer_count = obj.tacometer_count_msg.Data - obj.tacometer_offset;
         end
 
         %% calibration methods
@@ -241,6 +245,10 @@ classdef Arduino_ROS < handle
         end
         function is_new_data = is_new_mag_data_available() 
             is_new_data = obj.new_mag_data;
+        end
+
+        function zero_tacometer() 
+            obj.tacometer_offset = obj.tacometer_count_msg.Data;
         end
 
 
