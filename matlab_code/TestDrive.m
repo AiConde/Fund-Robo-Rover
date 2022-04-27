@@ -3,10 +3,14 @@ clc;
 
 disp("Setting up ROS objects...");
 
+calib_params = load("camera_calibration/calib_1024x768/cameraParams.mat");
+cam_intrinsics = calib_params.cameraParams.Intrinsics;
+
+
 arduino = Arduino_ROS();
 lidar = Lidar_ROS();
 gps = GPS_ROS();
-cam = Camera_ROS();
+cam = Camera_ROS(cam_intrinsics);
 
 disp("Done!");
 
@@ -44,14 +48,14 @@ while (run_loop)
     steer_desired = joystick.read_steer();
     pan_desired = joystick.read_twist();
 
-    throttle_servo_units = Utils.map(throttle_desired, -1, 1, 0, 1);
-    steer_servo_units = Utils.map(steer_desired, -1, 1, 0, 1);
+    throttle_servo_units = Utils.map(throttle_desired, -1, 1, 0.6, 0.4);
+    steer_servo_units = Utils.map(steer_desired, -1, 1, 1, 0);
     pan_servo_units = Utils.map(pan_desired, -1, 1, 0, 1);
 
     arduino.write_esc_pwm(throttle_servo_units);
     arduino.write_steer_servo(steer_servo_units);
     arduino.write_pan_servo(pan_servo_units);
-    %disp(throttle_servo_units, steer_servo_units
+    disp([throttle_servo_units, steer_servo_units, pan_servo_units])
 
     waitfor(r);
 end

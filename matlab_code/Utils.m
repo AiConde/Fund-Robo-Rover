@@ -16,7 +16,7 @@ classdef Utils
         function x_out = clamp(val, val_min, val_max)
             if (val < val_min) 
                 x_out = val_min;
-            else if (val > val_max)
+            elseif  (val > val_max)
                 x_out = val_max;
             else
                 x_out = val;
