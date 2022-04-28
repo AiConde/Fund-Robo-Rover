@@ -1,0 +1,9 @@
+2022-04-28-11-10-37.bag filter=lfs diff=lfs merge=lfs -text
+2022-04-28-11-55-15.bag filter=lfs diff=lfs merge=lfs -text
+gps_test_data.bag filter=lfs diff=lfs merge=lfs -text
+lidar_test_data.bag filter=lfs diff=lfs merge=lfs -text
+odom-test.bag filter=lfs diff=lfs merge=lfs -text
+oval-test.bag filter=lfs diff=lfs merge=lfs -text
+odom-test-whole-o.bag filter=lfs diff=lfs merge=lfs -text
+oval-test-fast.bag filter=lfs diff=lfs merge=lfs -text
+oval-test-hugging.bag filter=lfs diff=lfs merge=lfs -text
