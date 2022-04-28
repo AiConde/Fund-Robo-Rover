@@ -33,6 +33,14 @@ classdef Joystick < handle
         function trigger = read_trigger(obj)
             trigger = button(obj.joystick_obj, 1);
         end
+
+        function cluster = read_cluster(obj)
+            if (any(button(obj.joystick_obj,2:5)))
+                cluster = true;
+            else
+                cluster = false;
+            end
+        end
     end
 
 
