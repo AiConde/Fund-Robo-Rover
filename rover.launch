@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <include file="/home/funroboteam1/catkin_ws/src/urg_node/launch/urg_lidar.launch" output="screen" />
+  
+  <include file="/home/funroboteam1/catkin_ws/src/ublox/ublox_gps/launch/ublox_device.launch" output="screen" />
+  
+  <include file="/home/funroboteam1/catkin_ws/src/usb_cam/launch/usb_cam_runtime.launch" output="screen" />
+  
+  <node pkg="rosserial_python" name="arduino_nano" type="serial_node.py" output="screen">
+        <param name="port" value="/dev/arduino_nano" />
+        <param name="baud" value="115200" />
+  </node>
+
+</launch>
