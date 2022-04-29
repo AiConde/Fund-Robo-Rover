@@ -5,3 +5,4 @@ oval-test-hugging.bag filter=lfs diff=lfs merge=lfs -text
 2022-04-28-11-55-15.bag filter=lfs diff=lfs merge=lfs -text
 odom-test.bag filter=lfs diff=lfs merge=lfs -text
 odom-test-whole-o.bag filter=lfs diff=lfs merge=lfs -text
+friday-test.bag filter=lfs diff=lfs merge=lfs -text
