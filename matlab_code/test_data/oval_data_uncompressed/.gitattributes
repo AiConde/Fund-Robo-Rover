@@ -10,3 +10,6 @@ oval-test-hugging.bag filter=lfs diff=lfs merge=lfs -text
 friday-test.bag filter=lfs diff=lfs merge=lfs -text
 friday-test.orig.bag filter=lfs diff=lfs merge=lfs -text
 oval_fullcourse.bag filter=lfs diff=lfs merge=lfs -text
+oval_fullcourse.bag.7z.001 filter=lfs diff=lfs merge=lfs -text
+oval_fullcourse.bag.7z.002 filter=lfs diff=lfs merge=lfs -text
+oval_fullcourse.bag.7z.003 filter=lfs diff=lfs merge=lfs -text
