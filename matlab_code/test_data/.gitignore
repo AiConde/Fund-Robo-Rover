@@ -1,2 +1,6 @@
 *.bag
 
+oval_data_compressed/
+oval_data_uncompressed/
+oval_data_compressed/*.bag
+oval_data_uncompressed/*.bag
