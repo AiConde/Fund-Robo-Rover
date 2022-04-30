@@ -43,7 +43,7 @@ classdef Rotation2d < handle & matlab.mixin.Copyable
 
         %% Return a new Rotation2d that is the result of this one rotated by another
         function r2d_plus = plus(obj, other)
-            r2d_plus = obj.rotateBy(other);
+            r2d_plus = obj.rotate_by(other);
         end
 
         %% Return a new Rotation2d that is the result of this one rotated by the inverse of the other
@@ -53,7 +53,7 @@ classdef Rotation2d < handle & matlab.mixin.Copyable
 
         %% Return a new Rotation2d that is the inverse of this one
         function r2d_unary_minus = unary_minus(obj)
-            return Rotation2d.from_radians(-obj.value_radians);
+            r2d_unary_minus= Rotation2d.from_radians(-obj.value_radians);
         end
 
         %% Return a new Rotation2d that is the current rotation scaled by a scalar

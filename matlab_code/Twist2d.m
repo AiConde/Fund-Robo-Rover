@@ -13,9 +13,9 @@ classdef Twist2d < handle & matlab.mixin.Copyable
         % dtheta is change in angle relative to robot, in radians
         function obj = Twist2d(dx, dy, dtheta) 
             if (nargin == 0)
-                dx = 0.0;
-                dy = 0.0;
-                dtheta = 0.0;
+                obj.dx = 0.0;
+                obj.dy = 0.0;
+                obj.dtheta = 0.0;
             else
                 obj.dx = dx;
                 obj.dy = dy;

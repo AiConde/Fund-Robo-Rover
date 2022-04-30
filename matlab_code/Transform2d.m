@@ -15,7 +15,7 @@ classdef Transform2d < handle & matlab.mixin.Copyable
     methods
         %% Default constructor of Transform2d - takes in translation and rotation elements
         function obj = Transform2d(translation, rotation)
-            if (nargin = 0)
+            if (nargin == 0)
                 obj.translation = Translation2d();
                 obj.rotation = Rotation2d();
             else
@@ -37,22 +37,22 @@ classdef Transform2d < handle & matlab.mixin.Copyable
 
         %% Returns translation element
         function t2d = get_translation(obj)
-            return obj.translation;
+            t2d =  obj.translation;
         end
 
         %% Returns rotation element
         function r2d = get_rotation(obj)
-            return obj.rotation;
+            r2d= obj.rotation;
         end
 
         %% Returns x element of the translation
         function x = get_x(obj)
-            return obj.translation.get_x();
+            x= obj.translation.get_x();
         end
 
         %% Returns y element of the translation
         function y = get_y(obj)
-            return obj.translation.get_y();
+            y= obj.translation.get_y();
         end
     end
 

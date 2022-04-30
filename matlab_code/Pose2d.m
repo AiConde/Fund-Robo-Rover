@@ -19,7 +19,7 @@ classdef Pose2d < handle & matlab.mixin.Copyable
 
         %% Returns a Pose2d created from x,y + rotation in degrees
         function p2d = from_xydeg(x, y, deg)
-            p2d = Pose2d(Translation2d(x, y), Rotation2d.from_degrees(rad));
+            p2d = Pose2d(Translation2d(x, y), Rotation2d.from_degrees(deg));
         end
     end
 
@@ -105,7 +105,7 @@ classdef Pose2d < handle & matlab.mixin.Copyable
 
             x_new = dx * s - dy * c;
             y_new = dx * c + dy * s;
-            transform = Transform2d(Translation2d(x_new, y_new), Rotation2d(sin_theta, cos_theta));
+            transform = Transform2d(Translation2d(x_new, y_new), Rotation2d(cos_theta, sin_theta));
             p2d_exp = obj.plus(transform);
         end
 
