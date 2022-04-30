@@ -51,6 +51,13 @@ classdef Arduino_ROS < handle
             steer_angle_clamped = Utils.clamp(steer_angle, steer_angle_min, steer_angle_max);
             servo_pwm = Utils.map(steer_angle_clamped, steer_angle_min, steer_angle_max, 0.0, 1.0);
         end
+        %% Takes in target steering angle in degrees, outputs the corresponding servo value
+        function servo_pwm = servo_to_steer_angle(servo_pwm)
+            steer_angle_min = -30;
+            steer_angle_max = 30;
+            servo_pwm = Utils.map(servo_pwm, 0, 1, steer_angle_min, steer_angle_max);
+        end
+
         %% Takes in target pan angle in degrees, outputs the corresponding servo value
         function servo_pwm = pan_angle_to_servo(pan_angle)
             pan_angle_min = -150;

@@ -1,9 +1,10 @@
 classdef Odometry < handle
 
     properties (Constant)
-        WHEEL_DIAMETER_METERS = 0.1 % TODO calc
-        ENCODER_CPR = 2
-        WHEELBASE_METERS = 0.5; % TODO calc
+        WHEEL_DIAMETER_METERS = 0.01518617811430287;
+        ENCODER_CPR = 2;
+        WHEELBASE_METERS = 0.422275;
+        TRACKWIDTH_METERS = 0.295275;
     end
 
     properties
@@ -31,7 +32,7 @@ classdef Odometry < handle
             obj.odom_twist = Twist2d();
             obj.odom_vel = Twist2d();
 
-            first_run = true;
+            obj.first_run = true;
         end
 
         %% Main update loop, only using wheel encoder + steering angle (degrees)
@@ -39,12 +40,14 @@ classdef Odometry < handle
             if (obj.first_run)
                 obj.last_timestamp = tic;
                 obj.last_tacometer_value = tacometer_value;
+                obj.first_run = false;
                 return;
             end
-            loop_dt = toc(obj.last_timestamp);
+            %loop_dt = toc(obj.last_timestamp);
+            loop_dt = 0.01;
             obj.last_timestamp = tic;
 
-            tacometer_distance = tacometer_value - obj.last_tacometer_value
+            tacometer_distance = tacometer_value - obj.last_tacometer_value;
             obj.last_tacometer_value = tacometer_value;
 
             fwd_distance = (tacometer_distance / Odometry.ENCODER_CPR) * pi * Odometry.WHEEL_DIAMETER_METERS;
@@ -62,10 +65,13 @@ classdef Odometry < handle
             obj.odom_twist.dy = 0;
             obj.odom_twist.dtheta = dtheta;
 
+            %disp(["dtheta: ", dtheta])
+            %disp(["dist: ", fwd_distance])
+
             obj.odom_pose = obj.odom_pose.pose_exp(obj.odom_twist);
         end
 
-        %% Main update loop, using wheel encodes + angular velocity from gyro (rad/s)
+        %% Main update loop, using wheel encodes + angular velocity from gyro (rad/s) 
         function update_imu(obj, tacometer_value, gyro_angularvel_rads)
             if (obj.first_run)
                 obj.last_timestamp = tic;
