@@ -27,6 +27,10 @@ classdef DrivetrainController < handle
             obj.ang_vel_setpoint = ang_vel;
         end
 
+        % Update closed loop controller
+        function update(obj, tacometer, gyro_angvel, system_time)
+        end
+
         function [esc_pwm, steer_pwm] = get_pwm_outputs(obj)
             esc_pwm = obj.lin_vel_to_esc_pwm_openloop();
             steer_pwm = obj.ang_vel_to_steer_pwm_openloop();

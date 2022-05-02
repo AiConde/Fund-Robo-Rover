@@ -15,6 +15,7 @@ classdef Rover < handle
         system_status % flags to detemine system status e.g. wheels_stopped
         system_time   % current time
         rate_control % Rate control object
+        mission_active % Whether or not we're current running/executing commands
 
         % SENSE
         lidar     % lidar obj
@@ -26,9 +27,11 @@ classdef Rover < handle
         % THINK
         command_list % List of commands to run
         command_idx % Current command index
+        current_command % Current running command
+        new_command % Are we about to run a new command for the first time?
 
         % ACT
-        drivetrain_controller
+        drivetrain_controller % Closed loop controller for drivetrain
 
     end % End class properties
 
@@ -48,6 +51,7 @@ classdef Rover < handle
             obj.system_status = 0; % TODO
             obj.system_time = Utils.get_current_time();
             obj.rate_control = rateControl(50);
+            obj.mission_active = true;
 
             % load camera calibration properties
             calib_properties = load("camera_calibration/calib_1024x768/cameraParams.mat");
@@ -61,7 +65,34 @@ classdef Rover < handle
             if has_joystick
                 % TODO                obj.joystick =
             end
+
+            % set THINK properties
+            obj.command_idx = 1;
+            obj.new_command = true;
+
+            % set ACT properties
+            obj.drivetrain_controller = DrivetrainController();
+
+
+
         end
+
+        function set_mission_command_list(obj, cmd_list)
+            obj.command_list = cmd_list;
+        end
+
+        % rover.set_mission_command_list([
+        % SystemCheckCommand(),
+        % GyroCalibrateCommand(),
+        % LocalizeAprilTagCommand(),
+        % SetStartingPosCommand(),
+        % DriveWaypointCommand(waypoint_set_1),
+        % LocalizeAprilTagCommand(),
+        % DriveWaypointCommand(waypoint_set_2)
+        % FindDockCommand(),
+        % DriveDockCommand()
+        %]);        
+
 
         % Waits for all ROS objects to come online
         function wait_for_ros_init(obj)
@@ -92,12 +123,42 @@ classdef Rover < handle
             disp("Done!");
         end
 
+        % Inits all the robot stuff
+        function robot_init(obj)
+            obj.command_idx = 1;
+            obj.current_command = obj.command_list(obj.command_idx);
+            obj.new_command = true;
+        end
+
         % Call this as fast as possible from the external run function
         function main_loop(obj)
-            obj.update_time();
-            obj.update_odometry();
+            obj.update_time(); % Update system time
+            obj.update_odometry(); % Update odometry and localization engine
 
-            
+            if (obj.new_command) % We need to initialize the current command
+                obj.current_command.initialize();
+                obj.new_command = false;
+            end
+
+            obj.current_command.execute(); % Call execute function of current command
+
+            if (obj.current_command.is_done()) % Check if current command is done
+                obj.current_command.cmd_end(); % Call current command end function
+
+                if (obj.command_idx == size(obj.command_list))
+                    obj.mission_end(); % If we've called all the commands in our mission file, call the mission end function
+                else
+                    % We still have more commands to run! Increment to the next one.
+                    obj.command_idx = obj.command_idx + 1;
+                    obj.current_command = obj.command_list(obj.command_idx); % Set obj.current_command to the next command in the list
+                    obj.new_command = true; % Indicate to us that we have to run initialize() on the command next loop
+                end
+            end
+
+            obj.update_drivetrain_controller(); % Update drivetrain closed loop control
+
+
+            waitfor(obj.rate_control);
         end
 
         function update_time(obj)
@@ -105,11 +166,22 @@ classdef Rover < handle
         end
 
         function update_odometry(obj)
-            [accel_xyz, gyro_xyz] = obj.arduino.get_imu_output_calibrated();
+            [~, gyro_xyz] = obj.arduino.get_imu_output_calibrated();
             taco_val = obj.arduino.get_tacometer_output();
-            obj.odometry.update_imu(taco_val, gyro_xyz, obj.system_time);
+            obj.odometry.update_imu(taco_val, gyro_xyz(3), obj.system_time);
             obj.localization.write_odom_pose(obj.odometry.odom_pose, obj.system_time);
             obj.localization.write_odom_twist(obj.odometry.odom_twist, obj.system_time);
+        end
+
+        function update_drivetrain_controller(obj)
+            [~, gyro_xyz] = obj.arduino.get_imu_output_calibrated();
+            taco_val = obj.arduino.get_tacometer_output();
+
+            obj.drivetrain_controller.update(taco_val, gyro_xyz(3), obj.system_time);
+
+            [esc_pwm, steer_pwm] = obj.drivetrain_controller.get_pwm_outputs();
+            obj.arduino.write_esc_pwm(esc_pwm);
+            obj.arduino.write_steer_servo(steer_pwm);
         end
 
         function write_localization(obj, pose)
@@ -118,10 +190,13 @@ classdef Rover < handle
 
         % Called when we're done with all commands
         function mission_end(obj)
+            obj.mission_active = false;
+            obj.drivetrain_controller.set_vel_setpoints(0,0);
         end
 
-        % TODO figure out what we're doing with this 
+        % TODO figure out what we're doing with this
         function mission_error(obj)
+            obj.mission_active = false;
         end
 
         %% Class deconstructor
