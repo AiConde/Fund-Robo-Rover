@@ -44,7 +44,7 @@ classdef Lidar_ROS < handle
             laserScan = obj.laserscan_raw;
         end
         
-        function is_new_data = is_new_laserscan_available() 
+        function is_new_data = is_new_laserscan_available(obj) 
             is_new_data = obj.new_laser_data;
         end
 
