@@ -66,6 +66,13 @@ classdef AprilTags
             is_localization_tag = any(AprilTags.localization_tag_ids == tagid);
         end
 
+        function pose = get_pose_of_tag(tagid)
+            if (~AprilTags.is_localization_tag(tagid))
+                error("Given tag ID is not a localization tag!");
+            end
+            pose = AprilTags.localization_tag_poses((AprilTags.localization_tag_ids == tagid));
+        end
+
     end
 
 end
