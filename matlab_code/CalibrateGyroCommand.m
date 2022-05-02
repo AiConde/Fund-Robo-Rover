@@ -1,7 +1,5 @@
 classdef CalibrateGyroCommand < Command
 
-    properties (Constant)
-    end
 
     properties (Access = private)
         calib_time; % How long we want to collect calibration data
@@ -32,7 +30,7 @@ classdef CalibrateGyroCommand < Command
         end
 
         function done = is_done(obj)
-            done = obj.start_time + obj.calib_time > obj.rover_handle.system_time; % Has at least calib_time seconds elapsed since start_time?
+            done = obj.rover_handle.system_time > obj.start_time + obj.calib_time; % Has at least calib_time seconds elapsed since start_time?
         end
 
         function cmd_end(obj)
