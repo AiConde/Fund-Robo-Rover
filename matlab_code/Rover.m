@@ -6,13 +6,13 @@ classdef Rover < handle
 
         % LOCALIZATION
         initial_robot_pose % [x, y, theta] 2D pose in world coordinates 
-        loc_engine         % will return pose 2D + velcoities
+        localiztion        % will return pose 2D + velcoities
         odometry           % odometer obj
         found_dock         % boolean of having located dock
         dock_pose          % dock pose in world coordinates
 
         % SYSTEM STATE
-        system_status % flags to detemine system status e.g. wheels_stopped
+        system_status % flags to determine system status e.g. wheels_stopped
         system_time   % current time
 
         % SENSE
