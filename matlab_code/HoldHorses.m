@@ -23,7 +23,7 @@ classdef HoldHorses < Command
 
         function initialize(obj)
             obj.start_time = obj.rover_handle.system_time; % We're starting the command running at the current system time
-            obj.end_time = obj.start_time + obj.wait_time; 
+            obj.end_time = obj.start_time + obj.wait_time; % End time will occur after the wait interval has ellapsed
         end
 
         function execute(obj)
@@ -31,7 +31,7 @@ classdef HoldHorses < Command
         end
 
         function done = is_done(obj)
-            done = obj.rover_handle.system_time > obj.end_time; % Has at least calib_time seconds elapsed since start_time?
+            done = obj.rover_handle.system_time > obj.end_time; % Has at least wait_time seconds elapsed since start_time?
         end
 
         function cmd_end(obj)
