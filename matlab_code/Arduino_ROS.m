@@ -262,17 +262,20 @@ classdef Arduino_ROS < handle
 
         %% new data methods
 
-        function is_new_data = is_new_ir_data_available() 
+        function is_new_data = is_new_ir_data_available(obj) 
             is_new_data = obj.new_ir_data;
         end
-        function is_new_data = is_new_sonar_data_available() 
+        function is_new_data = is_new_sonar_data_available(obj) 
             is_new_data = obj.new_sonar_data;
         end
-        function is_new_data = is_new_imu_data_available() 
+        function is_new_data = is_new_imu_data_available(obj) 
             is_new_data = obj.new_imu_data;
         end
-        function is_new_data = is_new_mag_data_available() 
+        function is_new_data = is_new_mag_data_available(obj) 
             is_new_data = obj.new_mag_data;
+        end
+        function is_new_data = is_new_tacometer_data_available(obj) 
+            is_new_data = obj.new_tacometer_data;
         end
 
         function zero_tacometer() 

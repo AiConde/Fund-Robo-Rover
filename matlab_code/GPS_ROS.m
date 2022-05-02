@@ -89,10 +89,10 @@ classdef GPS_ROS < handle
             gyro_xyz = [gyro_x gyro_y gyro_z]; 
         end
 
-        function is_new_data = is_new_fix_data_available() 
+        function is_new_data = is_new_fix_data_available(obj) 
             is_new_data = obj.new_fix_data;
         end
-        function is_new_data = is_new_imu_data_available() 
+        function is_new_data = is_new_imu_data_available(obj) 
             is_new_data = obj.new_imu_data;
         end
 
