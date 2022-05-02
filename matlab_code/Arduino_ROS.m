@@ -33,7 +33,7 @@ classdef Arduino_ROS < handle
 
         tacometer_offset
 
-        gyro_bias_xyz
+        gyro_offset_xyz
 
     end % End clas
 
@@ -245,9 +245,14 @@ classdef Arduino_ROS < handle
         end
         %}
 
-        function set_gyro_cal(obj, gyro_cal)
-            obj.gyro_cal_xyz = gyro_cal;
+        function set_gyro_offset(obj, gyro_cal)
+            obj.gyro_offset_xyz = gyro_cal;
         end
+
+        function offset_xyz = get_gyro_offset(obj)
+            offset_xyz = obj.gyro_offset_xyz;
+        end
+
 
         %% new data methods
 

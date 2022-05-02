@@ -1,12 +1,22 @@
 classdef Command < handle
-
-    methods (Abstract)
-
-        initialize(obj, rover);
-        execute(obj, rover);
-        is_done(obj, rover);
-        cmd_end(obj, rover);
-
+    properties (Access = private) 
+        rover_handle;
     end
 
+    methods
+        function obj = Command(rover_obj)
+            if (nargin == 0)
+                error("Error: commands must be instantiated with a reference to the rover object!");
+            else
+                obj.rover_handle = rover_obj;
+            end
+        end
+    end
+
+    methods (Abstract)
+        initialize(obj);
+        execute(obj);
+        done = is_done(obj);
+        cmd_end(obj);
+    end
 end
