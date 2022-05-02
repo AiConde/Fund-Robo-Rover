@@ -253,6 +253,12 @@ classdef Arduino_ROS < handle
             offset_xyz = obj.gyro_offset_xyz;
         end
 
+        function [accel_xyz, gyro_xyz] = get_imu_output_calibrated(obj) 
+            [accel_xyz_raw, gyro_xyz_raw] = obj.get_imu_output();
+            accel_xyz = accel_xyz_raw;
+            gyro_xyz = gyro_xyz_raw - obj.gyro_offset_xyz;
+        end
+
 
         %% new data methods
 
