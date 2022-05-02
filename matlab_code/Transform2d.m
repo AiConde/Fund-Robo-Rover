@@ -19,8 +19,11 @@ classdef Transform2d < handle & matlab.mixin.Copyable
                 obj.translation = Translation2d();
                 obj.rotation = Rotation2d();
             else
-                obj.translation = copy(translation);
-                obj.rotation = copy(rotation);
+                %obj.translation = copy(translation);
+                %obj.rotation = copy(rotation);
+                obj.translation = Translation2d(translation.val_x, translation.val_y);
+                obj.rotation = Rotation2d(rotation.vec_cos, rotation.vec_sin);
+
             end
         end
 

@@ -33,6 +33,8 @@ classdef Arduino_ROS < handle
 
         tacometer_offset
 
+        gyro_bias_xyz
+
     end % End clas
 
     properties
@@ -92,6 +94,8 @@ classdef Arduino_ROS < handle
             obj.new_imu_data = false;
 
             obj.tacometer_offset = 0;
+
+            obj.gyro_bias_xyz = [0 0 0];
         end
 
         %% Class destructor
@@ -213,6 +217,7 @@ classdef Arduino_ROS < handle
 
         %% calibration methods
 
+        %{
         function [accel_offset, gyro_offset] = calibrate_imu(obj)
             num_readings = 100;
 
@@ -237,6 +242,11 @@ classdef Arduino_ROS < handle
             
             % get average gyro offset
             obj.gyro_offset = mean(gyro_cal);
+        end
+        %}
+
+        function set_gyro_cal(obj, gyro_cal)
+            obj.gyro_cal_xyz = gyro_cal;
         end
 
         %% new data methods

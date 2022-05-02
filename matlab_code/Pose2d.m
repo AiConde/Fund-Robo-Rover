@@ -9,7 +9,7 @@ classdef Pose2d < handle & matlab.mixin.Copyable
     methods (Static)
         %% Returns a Pose2d created from x,y + Rotation2d object
         function p2d = from_xyrot(x, y, r2d)
-            p2d = Pose2d(Translation2d(x, y), copy(r2d));
+            p2d = Pose2d(Translation2d(x, y), Rotation2d(r2d.vec_cos, r2d.vec_sin));
         end
 
         %% Returns a Pose2d created from x,y + rotation in radians
@@ -30,8 +30,8 @@ classdef Pose2d < handle & matlab.mixin.Copyable
                 obj.translation = Translation2d();
                 obj.rotation = Rotation2d();
             else
-                obj.translation = copy(translation);
-                obj.rotation = copy(rotation);
+                obj.translation = Translation2d(translation.val_x, translation.val_y);
+                obj.rotation = Rotation2d(rotation.vec_cos, rotation.vec_sin);
             end
         end
 

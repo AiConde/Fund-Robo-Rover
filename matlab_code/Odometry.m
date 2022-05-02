@@ -76,10 +76,12 @@ classdef Odometry < handle
             if (obj.first_run)
                 obj.last_timestamp = tic;
                 obj.last_tacometer_value = tacometer_value;
+                obj.first_run = false;
                 return;
             end
 
-            loop_dt = toc(obj.last_timestamp);
+            %loop_dt = toc(obj.last_timestamp);
+            loop_dt = 0.01;
             obj.last_timestamp = tic;
 
             tacometer_distance = tacometer_value - obj.last_tacometer_value;
