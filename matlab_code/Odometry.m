@@ -36,16 +36,16 @@ classdef Odometry < handle
         end
 
         %% Main update loop, only using wheel encoder + steering angle (degrees)
-        function update(obj, tacometer_value, steer_angle_deg)
+        function update(obj, tacometer_value, steer_angle_deg, system_time)
             if (obj.first_run)
-                obj.last_timestamp = tic;
+                obj.last_timestamp = system_time;
                 obj.last_tacometer_value = tacometer_value;
                 obj.first_run = false;
                 return;
             end
             %loop_dt = toc(obj.last_timestamp);
-            loop_dt = 0.01;
-            obj.last_timestamp = tic;
+            loop_dt = system_time - obj.last_timestamp;
+            obj.last_timestamp = system_time;
 
             tacometer_distance = tacometer_value - obj.last_tacometer_value;
             obj.last_tacometer_value = tacometer_value;
@@ -72,17 +72,17 @@ classdef Odometry < handle
         end
 
         %% Main update loop, using wheel encodes + angular velocity from gyro (rad/s) 
-        function update_imu(obj, tacometer_value, gyro_angularvel_rads)
+        function update_imu(obj, tacometer_value, gyro_angularvel_rads, system_time)
             if (obj.first_run)
-                obj.last_timestamp = tic;
+                obj.last_timestamp = system_time;
                 obj.last_tacometer_value = tacometer_value;
                 obj.first_run = false;
                 return;
             end
 
             %loop_dt = toc(obj.last_timestamp);
-            loop_dt = 0.01;
-            obj.last_timestamp = tic;
+            loop_dt = obj.last_timestamp - system_time;
+            obj.last_timestamp = system_time;
 
             tacometer_distance = tacometer_value - obj.last_tacometer_value;
             obj.last_tacometer_value = tacometer_value;
