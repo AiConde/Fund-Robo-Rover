@@ -1,5 +1,5 @@
 
-calib_params = load("camera_calibration\calib_1024x768\cameraParams.mat");
+calib_params = load("camera_calibration/calib_1024x768/cameraParams.mat");
 cam_intrinsics = calib_params.cameraParams.Intrinsics;
 
 cam = Camera(1, cam_intrinsics);
