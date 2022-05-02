@@ -5,13 +5,8 @@ classdef Rover < handle
         %% class properties
 
         % LOCALIZATION
-<<<<<<< HEAD
-        initial_robot_pose % [x, y, theta] 2D pose in world coordinates 
-        localiztion        % will return pose 2D + velcoities
-=======
         initial_robot_pose % [x, y, theta] 2D pose in world coordinates
         localization         % will return pose 2D + velcoities
->>>>>>> e2f05f205dd56c9f15d8107580ef307bda989827
         odometry           % odometer obj
         found_dock         % boolean of having located dock
         dock_pose          % dock pose in world coordinates
