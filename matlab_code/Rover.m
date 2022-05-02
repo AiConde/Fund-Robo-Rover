@@ -61,6 +61,11 @@ classdef Rover < handle
             obj.arduino.write_pan_servo(0.5);
         end
 
+        %% 
+        function command_fail(obj)
+            % this function gets called whenever a command fails
+        end
+
     end % End classmethods
 
 end % End class
