@@ -73,13 +73,26 @@ classdef AprilTags
             pose = AprilTags.localization_tag_poses((AprilTags.localization_tag_ids == tagid));
         end
 
-        function robot_pose = get_robot_pose_from_localization_tag(tagid, tag_pose, tag_image_pts)
+        function robot_pose = get_robot_pose_from_localization_tag(tagid, detected_pose, tag_image_pts)
             % Args:
-            %   tagid: int, tag ID 
+            %   tagid: int, tag ID
             %   tag_pose: MATLAB rigid3d object, detected pose of april tag
             %   tag_image_pts: 2D tag corner points in image
             % Returns:
             %   robot_pose: Pose2d of robot in world frame
+
+            % the transpose of T should be the cam T in tag coords
+            t_inv = detected_pose.T^-1;
+
+            % get camera pose in tag frame
+            cam_pose_tag_frame = Pose2d(Translation2d(-t_inv(4, 1), -t_inv(4, 3)),...
+                Rotation2d(t_inv(1,3), t_inv(3,3)).unary_minus);
+
+            % translate cam pose by tag pose to get cam pose in world frame
+            tag_pose = AprilTags.get_pose_of_localization_tag(tagid);
+
+            cam_pose_world_frame = cam_pose_tag_frame.plus(tag_pose);
+            robot_pose = cam_pose_world_frame;
         end
 
     end

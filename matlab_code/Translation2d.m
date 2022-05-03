@@ -41,9 +41,9 @@ classdef Translation2d < handle & matlab.mixin.Copyable
 
         %% Rotates a Translation2d by a Rotation2d
         % For example, rotating a Translation2d of [2 0] by 90 degrees will return [0 2]
-        function t2d_rotated = rotate_by(obj, other) 
-            x_new = obj.val_x * other.get_cos() - obj.val_y * other.get_sin();
-            y_new = obj.val_x * other.get_sin() + obj.val_y * other.get_cos();
+        function t2d_rotated = rotate_by(obj, rot) 
+            x_new = obj.val_x * rot.get_cos() - obj.val_y * rot.get_sin();
+            y_new = obj.val_x * rot.get_sin() + obj.val_y * rot.get_cos();
             t2d_rotated = Translation2d(x_new, y_new);
         end
 
