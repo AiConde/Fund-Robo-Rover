@@ -1,3 +1,8 @@
+%% TestDrive.m is the Joystick operation central for Fundamentals of Robotics Spring 2022 Team 1.
+%TestDrive.m sets up everything we need for driving with the joystick.
+%Use MissionDrive.m for for the sense, think, act loop.
+
+
 clear;
 clc;
 
