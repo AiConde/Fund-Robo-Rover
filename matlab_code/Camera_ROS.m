@@ -12,6 +12,7 @@ classdef Camera_ROS < handle
     properties (Constant)
         %% static properties
         camera_handle = "/dev/video0";
+        CAMERA_HFOV_DEGREES = 41;
     end % End getter properties
 
     methods
