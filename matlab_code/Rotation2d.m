@@ -7,6 +7,16 @@ classdef Rotation2d < handle & matlab.mixin.Copyable
         vec_sin % The sine component of the rotation vector
     end
 
+    properties (Dependent)
+        value_degrees  % The degrees value of the rotation
+    end
+
+    methods % getters
+      function deg = get.value_degrees(obj)
+         deg = rad2deg(obj.value_radians);
+      end
+   end
+
     methods (Static)
 
         %% Create new Rotation2d from a rotation value in radians

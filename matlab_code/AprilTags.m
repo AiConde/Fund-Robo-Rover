@@ -81,7 +81,8 @@ classdef AprilTags
             % Returns:
             %   robot_pose: Pose2d of robot in world frame
 
-            % the transpose of T should be the cam T in tag coords
+            % the transpose of detected pose Transform matrix should be
+            % the cam Transform matrix in tag coords
             t_inv = detected_pose.T^-1;
 
             % get camera pose in tag frame
@@ -90,8 +91,9 @@ classdef AprilTags
 
             % translate cam pose by tag pose to get cam pose in world frame
             tag_pose = AprilTags.get_pose_of_localization_tag(tagid);
+            tag_to_world = Transform2d.map_poses(Pose2d.from_xydeg(0,0,90), cam_pose_tag_frame);
 
-            cam_pose_world_frame = cam_pose_tag_frame.plus(tag_pose);
+            cam_pose_world_frame = cam_pose_tag_frame.transform_by(tag_to_world);
             robot_pose = cam_pose_world_frame;
         end
 

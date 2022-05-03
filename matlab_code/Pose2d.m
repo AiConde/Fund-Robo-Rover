@@ -72,7 +72,8 @@ classdef Pose2d < handle & matlab.mixin.Copyable
 
         %% Transforms this pose by a Transform2d and returns the resulting new pose
         function p2d_transform_by = transform_by(obj, transf)
-            translation_new = obj.translation.plus(transf.get_translation().rotate_by(obj.rotation));
+            translation_new = transf.translation.plus(obj.get_translation.rotate_by(transf.rotation));
+
             rotation_new = obj.rotation.plus(transf.get_rotation());
             p2d_transform_by = Pose2d(translation_new, rotation_new);
         end
