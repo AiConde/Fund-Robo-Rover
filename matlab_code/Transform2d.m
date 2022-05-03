@@ -8,7 +8,9 @@ classdef Transform2d < handle & matlab.mixin.Copyable
     methods (Static)
         %% Returns a Transform2d that maps from pose_initial to pose_last
         function tfm2d = map_poses(pose_initial, pose_last)
-            tfm2d = pose_last.get_translation().minus(pose_initial.get_translation()).rotate_by(pose_initial.get_rotation().unary_minus());
+            translation = pose_last.translation.minus(pose_initial.translation).rotate_by(pose_initial.rotation.unary_minus());
+            rotation = pose_last.rotation.minus(pose_initial.rotation);
+            tfm2d = Transform2d(translation, rotation);
         end
     end
 

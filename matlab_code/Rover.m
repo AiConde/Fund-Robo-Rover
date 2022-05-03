@@ -8,6 +8,7 @@ classdef Rover < handle
         initial_robot_pose % [x, y, theta] 2D pose in world coordinates
         localization         % will return pose 2D + velcoities
         odometry           % odometer obj
+        localized_starting_pose % Estimate of where we started, from initial tag localization
         found_dock         % boolean of having located dock
         dock_pose          % dock pose in world coordinates
 
