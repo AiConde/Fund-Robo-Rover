@@ -91,7 +91,8 @@ classdef AprilTags
 
             % translate cam pose by tag pose to get cam pose in world frame
             tag_pose = AprilTags.get_pose_of_localization_tag(tagid);
-            tag_to_world = Transform2d.map_poses(Pose2d.from_xydeg(0,0,90), cam_pose_tag_frame);
+
+            tag_to_world = Transform2d(tag_pose.translation, tag_pose.rotation);
 
             cam_pose_world_frame = cam_pose_tag_frame.transform_by(tag_to_world);
             robot_pose = cam_pose_world_frame;
