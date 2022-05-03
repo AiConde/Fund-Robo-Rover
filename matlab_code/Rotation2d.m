@@ -48,7 +48,7 @@ classdef Rotation2d < handle & matlab.mixin.Copyable
 
         %% Return a new Rotation2d that is the result of this one rotated by the inverse of the other
         function r2d_minus = minus(obj, other)
-            r2d_minus = obj.rotateBy(other.unary_minus());
+            r2d_minus = obj.rotate_by(other.unary_minus());
         end
 
         %% Return a new Rotation2d that is the inverse of this one
