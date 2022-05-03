@@ -1,7 +1,7 @@
 classdef AprilTags
 
     properties (Constant)
-        tag_size_meters = 0.019; % TODO what is it irl?
+        tag_size_meters = 0.164; % TODO what is it irl?
         tag_family = "tag36h11"; % TODO what is it irl?
         worldPoints = [0 0 0; AprilTags.tag_size_meters/2 0 0; 0 AprilTags.tag_size_meters/2 0; 0 0 AprilTags.tag_size_meters/2];
     end
@@ -18,7 +18,7 @@ classdef AprilTags
         function img_tags = draw_tags_on_image(img_undistorted, camera_intrinsics, num_tags, tag_ids, tag_img_corner_pts, tag_poses)
             I = img_undistorted;
             for i = 1:length(tag_poses)
-                disp(tag_poses(i).T);
+%                 disp(tag_poses(i).T);
                 % Get image coordinates for axes.
                 imagePoints = worldToImage(camera_intrinsics,tag_poses(i).Rotation, ...
                     tag_poses(i).Translation,AprilTags.worldPoints);

@@ -59,7 +59,7 @@ classdef Translation2d < handle & matlab.mixin.Copyable
 
         %% Returns the inverse of the current translation
         function t2d_unary_minus = unary_minus(obj)
-            t2d_unary_minus = Translation2d(-obj.val_x, -obj.val_y)
+            t2d_unary_minus = Translation2d(-obj.val_x, -obj.val_y);
         end
 
         %% Scales the Translation2d by a scalar
