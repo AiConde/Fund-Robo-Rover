@@ -6,7 +6,6 @@ classdef HoldHorses < Command
     properties (Access = private)
         wait_time; % How long we want to wait for
         start_time; % Time that we start running the command
-        stop_time; % Time that we resume operation
     end
 
     methods
@@ -23,7 +22,7 @@ classdef HoldHorses < Command
 
         function initialize(obj)
             obj.start_time = obj.rover_handle.system_time; % We're starting the command running at the current system time
-            obj.end_time = obj.start_time + obj.wait_time; % End time will occur after the wait interval has ellapsed
+            disp(strcat("HoldHorses: waiting ", num2str(obj.wait_time), " seconds"));
         end
 
         function execute(obj)
@@ -31,11 +30,11 @@ classdef HoldHorses < Command
         end
 
         function done = is_done(obj)
-            done = obj.rover_handle.system_time > obj.end_time; % Has at least wait_time seconds elapsed since start_time?
+            done = obj.rover_handle.system_time > obj.start_time + obj.wait_time; % Has at least wait_time seconds elapsed since start_time?
         end
 
         function done = cmd_end(obj)
-           done = true;
+            %disp("HoldHorses: done!");
         end
 
     end

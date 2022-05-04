@@ -21,9 +21,9 @@ classdef Twist2d < handle & matlab.mixin.Copyable
                 obj.dy = 0.0;
                 obj.dtheta = 0.0;
             else
-                obj.dx = dx;
-                obj.dy = dy;
-                obj.dtheta = dtheta;
+                obj.dx = double(dx);
+                obj.dy = double(dy);
+                obj.dtheta = double(dtheta);
             end
         end
     end

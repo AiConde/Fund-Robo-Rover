@@ -26,8 +26,8 @@ classdef Translation2d < handle & matlab.mixin.Copyable
                 obj.val_x = 0.0;
                 obj.val_y = 0.0;
             else
-                obj.val_x = x;
-                obj.val_y = y;
+                obj.val_x = double(x);
+                obj.val_y = double(y);
             end
         end
 
