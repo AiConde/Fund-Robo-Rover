@@ -11,9 +11,9 @@ rover.set_mission_command_list({
     WaypointNavCommand(rover, [
         Pose2d.fromxydeg(0,0,0);
         Pose2d.fromxydeg(2,0,0);
-    ]), ...
+    ], 0.5, 5, 1.8), ...
     HoldHorses(rover, 5),...
-    SimpleAprilTagLocalize(rover)
+    %SimpleAprilTagLocalize(rover)
 })
 
 
