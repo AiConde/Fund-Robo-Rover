@@ -10,7 +10,7 @@ classdef Arduino_ROS < handle
         sonar_voltages_msg
         tacometer_count_msg
         imu_output_msg
-        mag_output_msg 
+        mag_output_msg
         
         %% boolean flags to check if we've recieved new data
         new_ir_data

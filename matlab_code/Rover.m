@@ -8,6 +8,7 @@ classdef Rover < handle
         initial_robot_pose % [x, y, theta] 2D pose in world coordinates
         localization         % will return pose 2D + velcoities
         odometry           % odometer obj
+        localized_starting_pose % Estimate of where we started, from initial tag localization
         found_dock         % boolean of having located dock
         dock_pose          % dock pose in world coordinates
 
@@ -36,8 +37,7 @@ classdef Rover < handle
     end % End class properties
 
     methods
-        %% class methods
-
+        
         %% Class constructor
         function obj = Rover(has_joystick)
             % set localization properties
@@ -58,6 +58,7 @@ classdef Rover < handle
             cam_intrinsics = calib_properties.cameraParams.Intrinsics;
 
             % set SENSE properties
+            disp("Setting up ROS objects...");
             obj.lidar = Lidar_ROS();
             obj.cam = Camera_ROS(cam_intrinsics);
             obj.arduino = Arduino_ROS();
@@ -72,27 +73,13 @@ classdef Rover < handle
 
             % set ACT properties
             obj.drivetrain_controller = DrivetrainController();
-
-
-
         end
+
+        %% class methods
 
         function set_mission_command_list(obj, cmd_list)
             obj.command_list = cmd_list;
-        end
-
-        % rover.set_mission_command_list([
-        % SystemCheckCommand(),
-        % GyroCalibrateCommand(),
-        % LocalizeAprilTagCommand(),
-        % SetStartingPosCommand(),
-        % DriveWaypointCommand(waypoint_set_1),
-        % LocalizeAprilTagCommand(),
-        % DriveWaypointCommand(waypoint_set_2)
-        % FindDockCommand(),
-        % DriveDockCommand()
-        %]);        
-
+        end      
 
         % Waits for all ROS objects to come online
         function wait_for_ros_init(obj)
@@ -123,11 +110,16 @@ classdef Rover < handle
             disp("Done!");
         end
 
-        % Inits all the robot stuff
+        % Inits the robot
         function robot_init(obj)
+            % Inits all the robot command execution stuff
             obj.command_idx = 1;
             obj.current_command = obj.command_list(obj.command_idx);
             obj.new_command = true;
+            %Register start position of robot once for reference:
+            obj.update_time(); % Update system time
+            obj.update_odometry(); % Update odometry and localization engine
+            obj.localized_starting_pose = obj.odometry.odom_pose; %Set that
         end
 
         % Call this as fast as possible from the external run function
@@ -200,7 +192,7 @@ classdef Rover < handle
         end
 
         %% Class deconstructor
-        function delete(obj)
+        function delete(obj) %Delete is a reserved keyword and you can type "clear INSTANCENAME" to run it :B
             % set servos and esc to
             obj.arduino.write_esc_pwm(0.5);
             obj.arduino.write_steer_servo(0.5);

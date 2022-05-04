@@ -1,5 +1,12 @@
+%% Represents a translation in a 2d coordinate frame, represented by a simple x,y vector
+% Part of a series of classes called:
+% Pose2d, Transform2d, Translation2d, Rotation2d, and Twist2d. Read Pose2d.m for
+% more details.
+% A translation2d object will have properties that store values for x and y.
+
 classdef Translation2d < handle & matlab.mixin.Copyable
-    %% Represents a translation in a 2d coordinate frame, represented by a simple x,y vector
+    %% 
+    % 
     properties
         val_x
         val_y
@@ -41,9 +48,9 @@ classdef Translation2d < handle & matlab.mixin.Copyable
 
         %% Rotates a Translation2d by a Rotation2d
         % For example, rotating a Translation2d of [2 0] by 90 degrees will return [0 2]
-        function t2d_rotated = rotate_by(obj, other) 
-            x_new = obj.val_x * other.get_cos() - obj.val_y * other.get_sin();
-            y_new = obj.val_x * other.get_sin() + obj.val_y * other.get_cos();
+        function t2d_rotated = rotate_by(obj, rot) 
+            x_new = obj.val_x * rot.get_cos() - obj.val_y * rot.get_sin();
+            y_new = obj.val_x * rot.get_sin() + obj.val_y * rot.get_cos();
             t2d_rotated = Translation2d(x_new, y_new);
         end
 
@@ -59,7 +66,7 @@ classdef Translation2d < handle & matlab.mixin.Copyable
 
         %% Returns the inverse of the current translation
         function t2d_unary_minus = unary_minus(obj)
-            t2d_unary_minus = Translation2d(-obj.val_x, -obj.val_y)
+            t2d_unary_minus = Translation2d(-obj.val_x, -obj.val_y);
         end
 
         %% Scales the Translation2d by a scalar

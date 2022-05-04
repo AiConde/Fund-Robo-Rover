@@ -1,4 +1,4 @@
-classdef Camera_ROS < handle
+classdef Camera_ROS_ben < handle
     % Camera ROS interface class object
 
     properties
@@ -12,7 +12,6 @@ classdef Camera_ROS < handle
     properties (Constant)
         %% static properties
         camera_handle = "/dev/video0";
-        CAMERA_HFOV_DEGREES = 41;
     end % End getter properties
 
     methods
@@ -39,7 +38,7 @@ classdef Camera_ROS < handle
         %% class methods
 
         %% Class constructor
-        function obj = Camera_ROS(camera_intrinsics)
+        function obj = Camera_ROS_ben(camera_intrinsics)
 		    obj.camera_sub = rossubscriber("/usb_cam/image_raw/compressed", @obj.Callback_Image, "DataFormat", "struct");
             obj.new_image_available = false;
             obj.camera_intrinsics = camera_intrinsics;
@@ -73,35 +72,6 @@ classdef Camera_ROS < handle
         function [img_undistorted, new_image_origin] = undistort_image(obj, img)
             [img_undistorted, new_image_origin] = undistortImage(img, obj.camera_intrinsics, "OutputView","same");
         end
-
-        %{
-        function config_exposuremode(obj, exposuremode)
-            assert(strcmp('auto', exposuremode) || strcmp('manual', exposuremode));
-            mode_int = 1; % manual
-            if (strcmp('auto', exposuremode))
-                mode_int = 3;
-            end
-            system(strcat("v4l2-ctl -c auto_exposure=",mode_int," -d ", Camera_ROS.camera_handle);
-        end
-        function config_exposure(obj, exposure)
-            system(strcat("v4l2-ctl -c auto_exposure=",exposure," -d ", Camera_ROS.camera_handle);
-        end
-        function config_exposure_dynamic_framerate(obj, dynamic_framerate)
-            obj.camera_obj.Exposure = exposure;
-        end
-
-        function config_brightness(obj, brightness)
-            obj.camera_obj.Brightness = brightness;
-        end
-
-        function config_whitebalancemode(obj, whitebalancemode)
-             assert(strcmp('auto', whitebalancemode) || strcmp('manual', whitebalancemode));
-             obj.camera_obj.WhiteBalanceMode = whitebalancemode;
-        end
-        function config_whitebalance(obj, whitebalance)
-            obj.camera_obj.WhiteBalance = whitebalance;
-        end
-        %}
 
     end % End classmethods
 
