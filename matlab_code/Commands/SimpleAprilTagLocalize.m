@@ -11,15 +11,9 @@ classdef SimpleAprilTagLocalize < Command
     end
 
     methods
-        function obj = SimpleAprilTagLocalize(rover_handle, pause_duration)
+        function obj = SimpleAprilTagLocalize(rover_handle)
 
             obj@Command(rover_handle); % Pass rover_handle to the superclass Command constructor
-
-            if (nargin == 1) % If we don't get pause_duration specifically passed in
-                obj.calib_time = 2; % Default 2 seconds
-            else % If we get calib_time passed in
-                obj.pause_duration = pause_duration;
-            end
         end
 
         function initialize(obj)
