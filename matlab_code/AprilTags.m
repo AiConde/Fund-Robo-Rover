@@ -73,7 +73,7 @@ classdef AprilTags
             pose = AprilTags.localization_tag_poses((AprilTags.localization_tag_ids == tagid));
         end
 
-        function robot_pose = get_robot_pose_from_localization_tag(tagid, detected_pose, tag_image_pts)
+        function robot_pose = get_robot_pose_from_localization_tag(tagid, detected_pose, tag_image_pts, pan_rot)
             % Args:
             %   tagid: int, tag ID
             %   tag_pose: MATLAB rigid3d object, detected pose of april tag
@@ -81,7 +81,8 @@ classdef AprilTags
             % Returns:
             %   robot_pose: Pose2d of robot in world frame
 
-            % the transpose of T should be the cam T in tag coords
+            % the transpose of detected pose Transform matrix should be
+            % the cam Transform matrix in tag coords
             t_inv = detected_pose.T^-1;
 
             % get camera pose in tag frame
@@ -89,11 +90,23 @@ classdef AprilTags
                 Translation2d(-t_inv(4, 1), -t_inv(4, 3)),...
                 Rotation2d(t_inv(1,3), t_inv(3,3)).unary_minus);
 
-            % translate cam pose by tag pose to get cam pose in world frame
-            tag_pose = AprilTags.get_pose_of_localization_tag(tagid);
+            % find pose of our tagid
+            tag_pose_global = AprilTags.get_pose_of_localization_tag(tagid);
 
-            cam_pose_world_frame = cam_pose_tag_frame.plus(tag_pose);
-            robot_pose = cam_pose_world_frame;
+            % pose of the tag pose from global origin
+            origin_to_tag = Transform2d.map_poses( ...
+                Pose2d.from_xydeg(0,0,0), tag_pose_global);
+            % pose of the camera from tag origin
+            tag_to_camera = Transform2d.map_poses( ...
+                Pose2d.from_xydeg(0,0,0), cam_pose_tag_frame);
+            % pose of the camera pan mount from robot origin
+            camera_to_robot = Transform2d.map_poses( ...
+                Pose2d.from_xydeg(0,0,0), Pose2d.from_xyrot(0,0,pan_rot));
+
+            % apply the transforms to get from blank pose at origin in world frame
+            % to camera pose in world frame
+            robot_pose = ...
+                Pose2d.from_xydeg(0,0,0).transform_by(origin_to_tag).transform_by(tag_to_camera).transform_by(camera_to_robot);            
         end
 
     end

@@ -1,5 +1,12 @@
+%% Represents a translation in a 2d coordinate frame, represented by a simple x,y vector
+% Part of a series of classes called:
+% Pose2d, Transform2d, Translation2d, Rotation2d, and Twist2d. Read Pose2d.m for
+% more details.
+% A translation2d object will have properties that store values for x and y.
+
 classdef Translation2d < handle & matlab.mixin.Copyable
-    %% Represents a translation in a 2d coordinate frame, represented by a simple x,y vector
+    %% 
+    % 
     properties
         val_x
         val_y
