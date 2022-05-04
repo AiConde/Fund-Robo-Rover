@@ -62,9 +62,9 @@ classdef Camera_ROS < handle
             if (obj.new_image_available)
                 obj.new_image_available = false;
                 img = rosReadImage(obj.last_image_msg);
-                img_cache = img;
+                obj.img_cache = img;
             else
-                img = img_cache;
+                img = obj.img_cache;
             end
         end
 
@@ -73,6 +73,7 @@ classdef Camera_ROS < handle
             [img_undistorted, new_image_origin] = undistortImage(img, obj.camera_intrinsics, "OutputView","same");
         end
 
+        %{
         function config_exposuremode(obj, exposuremode)
             assert(strcmp('auto', exposuremode) || strcmp('manual', exposuremode));
             mode_int = 1; % manual
@@ -99,6 +100,7 @@ classdef Camera_ROS < handle
         function config_whitebalance(obj, whitebalance)
             obj.camera_obj.WhiteBalance = whitebalance;
         end
+        %}
 
     end % End classmethods
 
