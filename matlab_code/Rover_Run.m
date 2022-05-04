@@ -56,13 +56,13 @@ Pose2d.from_xydeg(11.73 ,51.17,0);
 Pose2d.from_xydeg(14.71 ,53.85,0);
 Pose2d.from_xydeg(18.23 ,55.95,0);
 Pose2d.from_xydeg(21.48 ,58.40,0);
-Pose2d.from_xydeg(25.19 ,60.09,0);
-Pose2d.from_xydeg(28.76 ,61.88,0);
-Pose2d.from_xydeg(32.38 ,63.76,0);
+Pose2d.from_xydeg(25.19-.3 ,60.09+.3,0);
+Pose2d.from_xydeg(28.76-.3 ,61.88+.3,0);
+Pose2d.from_xydeg(32.38-.3 ,63.76+.3,0);
 %Pose2d.from_xydeg(32.149819243604 ,64.45661846496107,0); % Gate
-Pose2d.from_xydeg(36.14 ,65.07,0);
-Pose2d.from_xydeg(40.19 ,66.16,0);
-Pose2d.from_xydeg(43.94 ,66.98,0);
+Pose2d.from_xydeg(36.14-.3 ,65.07+.3,0);
+Pose2d.from_xydeg(40.19-0.3 ,66.16+0.3,0);
+Pose2d.from_xydeg(43.94-0.3 ,66.98+0.3,0);
 %Pose2d.from_xydeg(48.25 ,67.45,0);
     ];
 
@@ -78,7 +78,7 @@ rover.set_mission_command_list({
     HoldHorses(rover,1);
     %WaypointNavCommand(rover, nav_pts_firsthalf, 0.5, 240, 2.2);
     %WaypointNavCommand(rover, nav_pts_secondhalf, 0.5, 240, 2.2);
-    WaypointNavCommand(rover, nav_pts, 0.5, 240, 2.2);
+    WaypointNavCommand(rover, nav_pts, 1, 240, 2.2);
     HoldHorses(rover, 5);
     
 })
@@ -138,7 +138,7 @@ rover.set_mission_command_list({
     });
 %}
 
-start_pose_inner = Pose2d.from_xydeg(-10.796370967741934,8.540114015572858,95);
+start_pose_inner = Pose2d.from_xydeg(-10.796370967741934,8.540114015572858,94.3);
 start_pose_outer = Pose2d.from_xydeg(-5.249930478309232,1.582591768631813,24.6);
 
 
