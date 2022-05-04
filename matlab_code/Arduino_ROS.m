@@ -95,7 +95,7 @@ classdef Arduino_ROS < handle
 
             obj.tacometer_offset = 0;
 
-            obj.gyro_bias_xyz = [0 0 0];
+            obj.gyro_offset_xyz = [0 0 0];
         end
 
         %% Class destructor

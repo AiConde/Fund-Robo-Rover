@@ -1,5 +1,5 @@
 classdef Command < handle
-    properties (Access = private) 
+    properties (Access = protected) 
         rover_handle;
     end
 

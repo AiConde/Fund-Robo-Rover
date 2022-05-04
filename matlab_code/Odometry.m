@@ -81,24 +81,28 @@ classdef Odometry < handle
             end
 
             %loop_dt = toc(obj.last_timestamp);
-            loop_dt = obj.last_timestamp - system_time;
+            loop_dt = system_time - obj.last_timestamp;
             obj.last_timestamp = system_time;
 
             tacometer_distance = tacometer_value - obj.last_tacometer_value;
             obj.last_tacometer_value = tacometer_value;
 
-            fwd_distance = (tacometer_distance / Odometry.ENCODER_CPR) * pi * Odometry.WHEEL_DIAMETER_METERS;
+            fwd_distance = (double(tacometer_distance) / Odometry.ENCODER_CPR) * pi * Odometry.WHEEL_DIAMETER_METERS;
             w = gyro_angularvel_rads;
             v = fwd_distance / loop_dt;
 
             dtheta = w * loop_dt;
-
+            
+            %disp(strcat("Vel x: ", num2str(v)));
             obj.odom_vel.dx = v;
-            obj.odom_vel.dy = 0;
+            obj.odom_vel.dy = 0.0;
             obj.odom_vel.dtheta = w;
 
+            %if (tacometer_distance > 0)
+            %    disp(strcat("odom dx: ", num2str(fwd_distance)));
+            %end
             obj.odom_twist.dx = fwd_distance;
-            obj.odom_twist.dy = 0;
+            obj.odom_twist.dy = 0.0;
             obj.odom_twist.dtheta = dtheta;
 
             obj.odom_pose = obj.odom_pose.pose_exp(obj.odom_twist);

@@ -24,7 +24,7 @@ classdef WaypointNavCommand < Command
 
             waypoints_converted = zeros(size(waypoint_list,1), 2);
             for i=1:size(waypoint_list,1)
-                waypoints_converted(:,i) = [waypoint_list(i).translation.val_x waypoint_list(i).translation.val_y];
+                waypoints_converted(i,:) = [waypoint_list(i).translation.val_x waypoint_list(i).translation.val_y];
             end
 
             obj.pp_controller = controllerPurePursuit( ...
@@ -40,22 +40,32 @@ classdef WaypointNavCommand < Command
         end
 
         function execute(obj)
-            robot_pose = obj.rover_handle.localization.current_pose;
-            robot_pose_xyt = [robot_pose.translation.val_x robot_pose.translation.val_y robot_pose.rotation.value_radians];
+            robot_pose = obj.rover_handle.localization.robot_pose;
+            robot_pose_xyt = double([robot_pose.translation.val_x robot_pose.translation.val_y robot_pose.rotation.value_radians]);
             [vel, ang_vel] = obj.pp_controller(robot_pose_xyt);
             obj.rover_handle.drivetrain_controller.set_vel_setpoints(vel,ang_vel);
+            %disp(strcat("WaypointNavCommand: Driving v=", num2str(vel), " m/s, w=", num2str(ang_vel), " rad/s"));
         end
 
         function done = is_done(obj)
             is_timeout = obj.rover_handle.system_time > obj.start_time + obj.max_nav_time;
 
-            current_translation = obj.rover_handle.localization.current_pose.translation;
+            current_translation = obj.rover_handle.localization.robot_pose.translation;
             final_waypoint_translation = obj.waypoints(end).translation;
             translation_delta = current_translation.get_distance(final_waypoint_translation);
 
             is_path_complete = abs(translation_delta) < abs(obj.end_distance_tolerance);
+            %disp(strcat("WaypointNavCommand: Distance to go: ", num2str(translation_delta), " m"));
+            %disp(strcat("WaypointNavCommand: Allowed time: ", num2str(obj.rover_handle.system_time - obj.start_time), " / ", num2str(obj.max_nav_time), " seconds"));
 
             done = is_timeout || is_path_complete;
+            if (done)
+                if (is_timeout)
+                    disp(strcat("WaypointNavCommand timeout after ", num2str(obj.max_nav_time), " seconds!"));
+                else
+                    disp("WaypointNavCommand reached goal!");
+                end
+            end
         end
 
         function cmd_end(obj)

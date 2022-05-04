@@ -20,7 +20,7 @@ classdef CalibrateGyroCommand < Command
         end
 
         function initialize(obj)
-            disp("Running CalibrateGyroCommand");
+            %disp("Running CalibrateGyroCommand");
             obj.start_time = obj.rover_handle.system_time; % We're starting the command running at the current system time
             obj.gyro_readings_xyz = []; % Blank buffer
         end
@@ -35,9 +35,9 @@ classdef CalibrateGyroCommand < Command
         end
 
         function cmd_end(obj)
-            disp("Done with CalibrateGyroCommand");
+            %disp("Done with CalibrateGyroCommand");
             gyro_xyz_mean = mean(obj.gyro_readings_xyz); % Take average of readings
-            disp(["Found offsets: ", gyro_xyz_mean]);
+            disp(strcat("Found offsets: x: ", num2str(gyro_xyz_mean(1)), " rad/s, y: ", num2str(gyro_xyz_mean(2)), " rad/s z: ", num2str(gyro_xyz_mean(3)), " rad/s"));
             obj.rover_handle.arduino.set_gyro_offset(gyro_xyz_mean); % Write offset to arduino class
         end
 

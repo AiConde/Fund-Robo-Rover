@@ -46,6 +46,7 @@ classdef Rover < handle
             obj.odometry = Odometry();
             obj.found_dock = false;
             obj.dock_pose = Pose2d(); % starts off as unknown
+            obj.localized_starting_pose = Pose2d();
 
             % Set system state
             obj.system_status = 0; % TODO
@@ -113,13 +114,15 @@ classdef Rover < handle
         % Inits the robot
         function robot_init(obj)
             % Inits all the robot command execution stuff
+            obj.wait_for_ros_init();
             obj.command_idx = 1;
-            obj.current_command = obj.command_list(obj.command_idx);
+            obj.current_command = obj.command_list{obj.command_idx};
             obj.new_command = true;
             %Register start position of robot once for reference:
             obj.update_time(); % Update system time
             obj.update_odometry(); % Update odometry and localization engine
-            obj.localized_starting_pose = obj.odometry.odom_pose; %Set that
+            obj.localized_starting_pose = Pose2d(obj.localization.robot_pose.translation, obj.localization.robot_pose.rotation); %Set that
+
         end
 
         % Call this as fast as possible from the external run function
@@ -128,6 +131,7 @@ classdef Rover < handle
             obj.update_odometry(); % Update odometry and localization engine
 
             if (obj.new_command) % We need to initialize the current command
+                disp(strcat("Initializing ", class(obj.current_command)));
                 obj.current_command.initialize();
                 obj.new_command = false;
             end
@@ -135,14 +139,16 @@ classdef Rover < handle
             obj.current_command.execute(); % Call execute function of current command
 
             if (obj.current_command.is_done()) % Check if current command is done
+                disp(strcat("Finished ", class(obj.current_command)));
                 obj.current_command.cmd_end(); % Call current command end function
-
-                if (obj.command_idx == size(obj.command_list))
+                
+                disp(strcat("Finished command ", int2str(obj.command_idx), " of ", int2str(size(obj.command_list,1))));
+                if (obj.command_idx == size(obj.command_list,1))
                     obj.mission_end(); % If we've called all the commands in our mission file, call the mission end function
                 else
                     % We still have more commands to run! Increment to the next one.
                     obj.command_idx = obj.command_idx + 1;
-                    obj.current_command = obj.command_list(obj.command_idx); % Set obj.current_command to the next command in the list
+                    obj.current_command = obj.command_list{obj.command_idx}; % Set obj.current_command to the next command in the list
                     obj.new_command = true; % Indicate to us that we have to run initialize() on the command next loop
                 end
             end
@@ -172,6 +178,8 @@ classdef Rover < handle
             obj.drivetrain_controller.update(taco_val, gyro_xyz(3), obj.system_time);
 
             [esc_pwm, steer_pwm] = obj.drivetrain_controller.get_pwm_outputs();
+            %obj.arduino.write_esc_pwm(0.5);
+            %obj.arduino.write_steer_servo(0.5);
             obj.arduino.write_esc_pwm(esc_pwm);
             obj.arduino.write_steer_servo(steer_pwm);
         end

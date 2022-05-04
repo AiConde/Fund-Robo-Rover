@@ -57,9 +57,11 @@ classdef GPS_ROS < handle
         end
 
         function Callback_Imu(obj, sub, imudata)
+            obj.new_imu_data = true;
             obj.imu_output_msg = imudata;
         end
         function Callback_Fix(obj, sub, fixdata)
+            obj.new_fix_data = true;
             obj.fix_output_msg = fixdata;
         end
 
