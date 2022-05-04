@@ -44,6 +44,15 @@ classdef SimpleAprilTagLocalize < Command
             % find largest tag
             [rigid3d, tag_id] = get_largest_tag( ...
                 num_tags, tag_ids, tag_img_corners, rigid3ds);
+
+            % we cannot localize from these tagids because they dont have
+            % defined poses
+            bad_tag_ids = [18 17 0];
+            if ismember(tag_id, bad_tag_ids)
+                obj.tags_detected = false;
+                disp(["only bad tags detected: tagid ", tag_id])
+                return
+            end
             
             % get rover pose from that tag's rigid3d
             robot_pose = AprilTags.get_robot_pose_from_localization_tag( ...
