@@ -135,7 +135,7 @@ classdef Arduino_ROS < handle
 
         %% Act methods
 
-        function write_esc_pwm(obj, esc_pwm_value) 
+        function write_esc_pwm(obj, esc_pwm_value)  % pwm vlue 0-1?
             obj.last_esc_pwm = esc_pwm_value;
             pub_msg = rosmessage(obj.esc_pwm_pub);
             pub_msg.Data = esc_pwm_value;
