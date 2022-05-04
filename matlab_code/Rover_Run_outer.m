@@ -92,7 +92,7 @@ rover.set_mission_command_list({
 start_pose_outer = Pose2d.from_xydeg(-5.249930478309232,1.582591768631813,24.6);
 
 
-start_pose = copy(start_pose_inner);
+start_pose = copy(start_pose_outer);
 rover.odometry.set_pose(copy(start_pose));
 rover.write_localization(copy(start_pose));
 rover.robot_init();
