@@ -24,13 +24,13 @@ classdef SimpleAprilTagLocalize < Command
             pan_rot = Rotation2d.from_degrees(0); % this is hard-coded for now
 
             % get image from camera
-            img = rgb2gray(cam.get_image_raw());
-            [obj.img_undistort, ~] = cam.undistort_image(img);
+            img = rgb2gray(obj.rover_handle.cam.get_image_raw());
+            [obj.img_undistort, ~] = obj.rover_handle.cam.undistort_image(img);
 
             % run april tag detection
             [num_tags, tag_ids, tag_img_corners, rigid3ds] = ...
                 AprilTags.detect_tags_in_image( ...
-                obj.img_undistort, obj.rover_handle.cam.cam_intrinsics);
+                obj.img_undistort, obj.rover_handle.cam.camera_intrinsics);
 
             % if no tag detected, disp so and return
             if ~num_tags
@@ -61,7 +61,9 @@ classdef SimpleAprilTagLocalize < Command
 
         function cmd_end(obj)
             disp("Done with SimpleAprilTagLocalize");
-            disp(["localized pose at: ", obj.localized_pose]);
+            disp(["localized pose at: x,y ", obj.localized_pose.translation.val_x, obj.localized_pose.translation.val_y ]);
+            disp(["localized pose at: theta ", obj.localized_pose.rotation.value_radians]);
+
         end
 
     end

@@ -5,7 +5,7 @@ classdef AprilTags
         tag_family = "tag36h11"; % TODO what is it irl?
         worldPoints = [0 0 0; AprilTags.tag_size_meters/2 0 0; 0 AprilTags.tag_size_meters/2 0; 0 0 AprilTags.tag_size_meters/2];
 
-        localization_tag_ids = [1 2 3 4 5 6 7 8 9 10 11 13 14 15 16];
+        localization_tag_ids = [1 2 3 4 5 6 7 8 9 10 11 13 14 15 16 18];
         localization_tag_poses = [
             Pose2d.from_xydeg(-6.860, 8.502, -85)
             Pose2d.from_xydeg(-4.188, 23.775, -109.6)
@@ -22,6 +22,7 @@ classdef AprilTags
             Pose2d.from_xydeg(39.286, 2.134, 33)
             Pose2d.from_xydeg(26.494, -3.701, 17)
             Pose2d.from_xydeg(14.098, -5.531, -9)
+            Pose2d.from_xydeg(0, 0, 0)
             ];
         dock_tag_id = 0;
         gate_tag_id = 17;
