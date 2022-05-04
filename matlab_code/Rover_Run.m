@@ -37,6 +37,7 @@ Pose2d.from_xydeg(   -0.0715 ,  0.0267, 0);
 Pose2d.from_xydeg(   -7.189516129032258 ,  -1.7265016685205783, 0);
 ];
 
+figure; hold on; axis equal;
 
 inner_nav_pts = [
         %Pose2d.from_xydeg(-10.796370967741934,8.540114015572858,95);
@@ -66,11 +67,49 @@ Pose2d.from_xydeg(43.94-0.3 ,66.98+0.3,0);
 %Pose2d.from_xydeg(48.25 ,67.45,0);
     ];
 
+waypoints = zeros(length(oval_nav_pts), 2);
+for i=1:length(oval_nav_pts)
+%     % plot pose i
+%     Utils.quiver_pose(oval_nav_pts(i));
+    navptx = oval_nav_pts(i).translation.val_x;
+    navpty = oval_nav_pts(i).translation.val_y;
+    waypoints(i,:) = [navptx, navpty];
+end
+plot(waypoints(:,1), waypoints(:,2), "-o");
+
+% inner_nav_pts = [
+%         %Pose2d.from_xydeg(-10.796370967741934,8.540114015572858,95);
+%         %Pose2d.from_xydeg(-12.796370967741934,10.540114015572858,95);
+%         Pose2d.from_xydeg(-11.34,13.00,0);
+% Pose2d.from_xydeg(-8.71 ,16.99,0);
+% Pose2d.from_xydeg(-7.36 ,20.89,0);
+% Pose2d.from_xydeg(-5.90 ,24.72,0);
+% Pose2d.from_xydeg(-5.04 ,28.54,0);
+% Pose2d.from_xydeg(-2.92 ,32.08,0);
+% Pose2d.from_xydeg(-1.33 ,35.92,0);
+% Pose2d.from_xydeg(0.94  ,39.20,0);
+% Pose2d.from_xydeg(3.07  ,42.70,0);
+% Pose2d.from_xydeg(5.93  ,45.62,0);
+% Pose2d.from_xydeg(9.07  ,48.24,0);
+% Pose2d.from_xydeg(11.73 ,51.17,0);
+% Pose2d.from_xydeg(14.71 ,53.85,0);
+% Pose2d.from_xydeg(18.23 ,55.95,0);
+% Pose2d.from_xydeg(21.48 ,58.40,0);
+% Pose2d.from_xydeg(25.19 ,60.09,0);
+% Pose2d.from_xydeg(28.76 ,61.88,0);
+% Pose2d.from_xydeg(32.38 ,63.76,0);
+% %Pose2d.from_xydeg(32.149819243604 ,64.45661846496107,0); % Gate
+% Pose2d.from_xydeg(36.14 ,65.07,0);
+% Pose2d.from_xydeg(40.19 ,66.16,0);
+% Pose2d.from_xydeg(43.94 ,66.98,0);
+% %Pose2d.from_xydeg(48.25 ,67.45,0);
+%     ];
+% 
 nav_pts_firsthalf = copy(oval_nav_pts(1:13));
 nav_pts_secondhalf = copy(oval_nav_pts(14:end));
-
-nav_pts = copy(inner_nav_pts);
-
+% 
+% nav_pts = copy(inner_nav_pts);
+% 
 % define list of rover commands to run
 rover.set_mission_command_list({
     CalibrateGyroCommand(rover);

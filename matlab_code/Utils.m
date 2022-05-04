@@ -23,6 +23,13 @@ classdef Utils
             end
         end
 
+        function quiver_pose(pose)
+            pose_y = Pose2d(...
+                pose.translation, pose.rotation.plus(Rotation2d.from_degrees(90)));
+            quiver(pose_y.translation.val_x, pose_y.translation.val_y,...
+                pose_y.rotation.vec_cos, pose_y.rotation.vec_sin, "LineWidth", 2);
+        end
+
     end % End static methods
 end
 
