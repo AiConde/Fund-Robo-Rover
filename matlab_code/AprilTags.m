@@ -85,7 +85,8 @@ classdef AprilTags
             t_inv = detected_pose.T^-1;
 
             % get camera pose in tag frame
-            cam_pose_tag_frame = Pose2d(Translation2d(-t_inv(4, 1), -t_inv(4, 3)),...
+            cam_pose_tag_frame = Pose2d( ...
+                Translation2d(-t_inv(4, 1), -t_inv(4, 3)),...
                 Rotation2d(t_inv(1,3), t_inv(3,3)).unary_minus);
 
             % translate cam pose by tag pose to get cam pose in world frame
