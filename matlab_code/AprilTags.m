@@ -91,6 +91,9 @@ classdef AprilTags
                 
 
             %cam_pose_tag_frame.rotation = Rotation2d.from_degrees(0);
+            cam_pose_tag_frame = Pose2d( ...
+                Translation2d(-t_inv(4, 1), -t_inv(4, 3)),...
+                Rotation2d(t_inv(1,3), t_inv(3,3)).unary_minus);
 
             % find pose of our tagid
             tag_pose_global = AprilTags.get_pose_of_localization_tag(tagid);
