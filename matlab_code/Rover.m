@@ -161,8 +161,8 @@ classdef Rover < handle
             [~, gyro_xyz] = obj.arduino.get_imu_output_calibrated();
             taco_val = obj.arduino.get_tacometer_output();
             obj.odometry.update_imu(taco_val, gyro_xyz(3), obj.system_time);
-            obj.localization.write_odom_pose(obj.odometry.odom_pose, obj.system_time);
-            obj.localization.write_odom_twist(obj.odometry.odom_twist, obj.system_time);
+            %obj.localization.write_odom_pose(obj.odometry.odom_pose, obj.system_time);
+            obj.localization.update_odom(obj.odometry.odom_twist, obj.system_time);
         end
 
         function update_drivetrain_controller(obj)

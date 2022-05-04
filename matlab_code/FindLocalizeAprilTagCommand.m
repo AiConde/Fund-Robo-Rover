@@ -35,6 +35,7 @@ classdef FindLocalizeAprilTagCommand < Command
 
         final_poll_num_ok_frames;
         final_poll_tag_poses;
+        final_poll_tag_img_pts;
     end
 
     methods
@@ -156,17 +157,19 @@ classdef FindLocalizeAprilTagCommand < Command
                         % If we've waited long enough since taking the last image
                         if (obj.rover_handle.system_time > obj.WAIT_BETWEEN_IMAGES_SECONDS + obj.last_image_acq_time)
                             img_cap = obj.rover_handle.camera.get_image_raw();
-                            
+
                             [img_undistort, new_center] = obj.rover_handle.camera.undistort_image(img_cap);
                             [num_tags, tag_ids, tag_img_corners, tag_poses] = AprilTags.detect_tags_in_image(img_undistort, cam_intrinsics);
-                            
+
                             % If we found the tag we were looking for, write it to the buffer
                             if (any(obj.best_candidate_id == tag_ids))
                                 tag_pose = tag_poses(obj.best_candidate_id == tag_ids);
+                                img_pts = tag_img_corners(:,:,obj.best_candidate_id == tag_ids);
                                 obj.final_poll_num_ok_frames = obj.final_poll_num_ok_frames + 1;
                                 obj.final_poll_tag_poses = [obj.final_poll_tag_poses ; tag_pose];
+                                obj.final_poll_tag_img_pts = cat(3, obj.final_poll_tag_img_pts, img_pts);
                             end
-                            
+
                             obj.last_image_acq_time = obj.rover_handle.system_time;
                             obj.img_samples_left = obj.img_samples_left - 1;
 
@@ -192,11 +195,32 @@ classdef FindLocalizeAprilTagCommand < Command
                 disp("WARNING: NO TAG FOUND IN FINDLOCALIZEAPRILTAG");
             else
                 num_outliers_detect = floor(FindLocalizeAprilTagCommand.NUM_IMAGE_OUTLIER_REJECTION * obj.final_poll_num_ok_frames);
-                
-                % Run Ben's localization code for each april tag
-                AprilTags
-                
 
+                % Run Ben's localization code for each april tag
+                robot_poses = [];
+                robot_translations = [];
+                robot_rotations = [];
+                robot_rotations_quat = [];
+
+                for (idx=1:obj.final_poll_num_ok_frames)
+                    pose_detected = AprilTags.get_robot_pose_from_localization_tag( ...
+                        obj.best_candidate_id, obj.final_poll_tag_poses(idx),obj.final_poll_tag_img_pts(:,:,idx) ...
+                        Rotation2d.from_degrees(obj.best_candidate_cam_angle));
+                    robot_poses = [robot_poses ; pose_detected];
+                    robot_translations = [robot_translations ; pose_detected.translation.val_x pose_detected.translation.val_y];
+                    robot_rotations = [robot_rotations ; pose_detected.rotation.value_radians];
+
+                    robot_rotations_quat = [robot_rotations_quat ; quaternion([pose_detected.rotation.value_radians 0 0],'euler','ZYX','frame');]
+                end
+
+                mean_rotations_quat = meanrot(robot_rotations_quat);
+                mean_rotations_rad = euler(mean_rotations_quat,'ZYX','frame');
+
+                rotation_avg = Rotation2d.from_radians(mean_rotations_rad(1));
+                pos_avg = mean(rmoutliers(robot_translations));
+                translation_avg = Translation2d(pos_avg(1), pos_avg(2));
+                pose = Pose2d(translation_avg, rotation_avg);
+                obj.robot_handle.write_localization(pose);
             end
         end
 
