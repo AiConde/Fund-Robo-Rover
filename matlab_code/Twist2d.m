@@ -1,11 +1,15 @@
-classdef Twist2d < handle & matlab.mixin.Copyable
+%% Represents the derivative of a position, translation, and rotation vector for a pose2d object.
+% Part of a series of classes called:
+% Pose2d, Transform2d, Translation2d, Rotation2d, and Twist2d. Read Pose2d.m for
+% more details.
+% A translation2d object will have properties that store values for x and y.
 
+classdef Twist2d < handle & matlab.mixin.Copyable
     properties
         dx
         dy
         dtheta
     end
-
     methods
         %% Default twist constructor.
         % dx is change in x direction relative to robot
@@ -23,6 +27,5 @@ classdef Twist2d < handle & matlab.mixin.Copyable
             end
         end
     end
-
 end
 
