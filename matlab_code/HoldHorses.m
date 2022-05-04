@@ -34,8 +34,8 @@ classdef HoldHorses < Command
             done = obj.rover_handle.system_time > obj.end_time; % Has at least wait_time seconds elapsed since start_time?
         end
 
-        function cmd_end(obj)
-           %Already done
+        function done = cmd_end(obj)
+           done = true;
         end
 
     end

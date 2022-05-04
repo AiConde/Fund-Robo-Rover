@@ -1,6 +1,20 @@
-classdef Pose2d < handle & matlab.mixin.Copyable
-    %% Represents a pose in a 2d coordinate frame -- i.e. a rotation and a transformation
+%% Represents a pose in a 2d coordinate frame -- i.e. a rotation and a transformation
+% Part of a series of classes called:
+% Pose2d, Transform2d, Translation2d, Rotation2d, and Twist2d.
+% A p2d object will have two properties: Translation and Rotation.
 
+% Internally, translations are stored as X and Y
+% Example: p2d.translation is a struct with X and Y.
+
+% Internally, rotations are stored as a normalized cosine and sine values in
+% relation to the translation value.
+% Example: p2d.rotation is a struct with vect_cos and vect_sin.
+
+% You can do a lot of things with pose2d objects! Read the methods section.
+% p2d objects by Solomon Greenberg April 2022. Rev A.
+
+
+classdef Pose2d < handle & matlab.mixin.Copyable
     properties
         translation
         rotation
@@ -124,7 +138,7 @@ classdef Pose2d < handle & matlab.mixin.Copyable
             cos_minus_one = transform.get_rotation().get_cos() - 1;
 
             half_theta_by_tan_of_half_dtheta = 0.0;
-            if (abs(cos_minus_one) < 1E-9)
+            if (abs(cos_minus_one) < 1E-9) % If angle change is zero
                 half_theta_by_tan_of_half_dtheta = 1.0 - ((1.0/12.0) * dtheta * dtheta);
             else
                 half_theta_by_tan_of_half_dtheta = -(half_dtheta * transform.get_rotation().get_sin()) / cos_minus_one;

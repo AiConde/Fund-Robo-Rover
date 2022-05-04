@@ -1,5 +1,11 @@
+%% Represents a rotation in a 2d coordinate frame, represented by a rotation vector consisting of a cosine and sine component
+% Part of a series of classes called:
+% Pose2d, Transform2d, Translation2d, Rotation2d, and Twist2d. Read Pose2d.m for
+% more details.
+% A translation2d object will have properties that store values for x and y.
+
 classdef Rotation2d < handle & matlab.mixin.Copyable
-    %% Represents a rotation in a 2d coordinate frame, represented by a rotation vector consisting of a cosine and sine component
+
 
     properties
         value_radians % The radians value of the rotation
