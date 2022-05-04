@@ -8,7 +8,6 @@ classdef DriveDockCommand  < Command
         dock_distance;
         start_time;  % time cutoff(the time in which the dock command should start)
       
-
         pp_controller;
     end
 
@@ -49,6 +48,7 @@ classdef DriveDockCommand  < Command
             % position
             % store dock pose
             obj.dock_pose = obj.rover_handle.dock_pose.p2d.translation;
+           
             
 
 
@@ -84,5 +84,5 @@ classdef DriveDockCommand  < Command
             obj.rover_handle.drivetrain_controller.set_vel_setpoints(0,0);
         end
 
-    end
+            end
 end
