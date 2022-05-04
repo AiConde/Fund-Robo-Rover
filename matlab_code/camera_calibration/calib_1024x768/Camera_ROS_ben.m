@@ -12,6 +12,7 @@ classdef Camera_ROS_ben < handle
     properties (Constant)
         %% static properties
         camera_handle = "/dev/video0";
+        intrinsics = 
     end % End getter properties
 
     methods
@@ -29,6 +30,10 @@ classdef Camera_ROS_ben < handle
 
         new_image_available % Update whenever we recieve a new image
         img_cache % Last decoded image
+
+        % set intrinsics
+        calib_params = load("camera_calibration/calib_1024x768/cameraParams2.mat");
+        cam_intrinsics = calib_params.cameraParams2.Intrinsics;
     end % End clas
     properties (SetAccess = private)
         camera_intrinsics % Calibrated camera intrinsics - read only from outside the class

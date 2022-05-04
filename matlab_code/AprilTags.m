@@ -73,7 +73,7 @@ classdef AprilTags
             pose = AprilTags.localization_tag_poses((AprilTags.localization_tag_ids == tagid));
         end
 
-        function robot_pose = get_robot_pose_from_localization_tag(tagid, detected_pose, tag_image_pts, pan_rot)
+        function robot_pose = get_robot_pose_from_localization_tag(tagid, detected_pose, pan_rot)
             % Args:
             %   tagid: int, tag ID
             %   tag_pose: MATLAB rigid3d object, detected pose of april tag
