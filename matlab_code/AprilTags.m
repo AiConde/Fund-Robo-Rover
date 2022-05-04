@@ -86,8 +86,11 @@ classdef AprilTags
             t_inv = detected_pose.T^-1;
 
             % get camera pose in tag frame
-            cam_pose_tag_frame = Pose2d(Translation2d(-t_inv(4, 1), -t_inv(4, 3)),...
-                Rotation2d(t_inv(1,3), t_inv(3,3)).unary_minus);
+            cam_pose_tag_frame = Pose2d(Translation2d(-t_inv(4, 3), t_inv(4, 1)),...
+                Rotation2d(-t_inv(3,3), -t_inv(1,3)));
+                
+
+            %cam_pose_tag_frame.rotation = Rotation2d.from_degrees(0);
 
             % find pose of our tagid
             tag_pose_global = AprilTags.get_pose_of_localization_tag(tagid);
@@ -100,12 +103,14 @@ classdef AprilTags
                 Pose2d.from_xydeg(0,0,0), cam_pose_tag_frame);
             % pose of the camera pan mount from robot origin
             camera_to_robot = Transform2d.map_poses( ...
-                Pose2d.from_xydeg(0,0,0), Pose2d.from_xyrot(0,0,pan_rot));
+                Pose2d.from_xydeg(0,0,0), Pose2d.from_xyrot(0,0,pan_rot.unary_minus));
 
             % apply the transforms to get from blank pose at origin in world frame
             % to camera pose in world frame
             robot_pose = ...
-                Pose2d.from_xydeg(0,0,0).transform_by(origin_to_tag).transform_by(tag_to_camera).transform_by(camera_to_robot);            
+                Pose2d.from_xydeg(0,0,0).transform_by(origin_to_tag).transform_by(tag_to_camera).transform_by(camera_to_robot); 
+%             robot_pose = ...
+%             Pose2d.from_xydeg(0,0,0).transform_by(origin_to_tag).transform_by(tag_to_camera); 
         end
 
     end
