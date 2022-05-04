@@ -56,7 +56,7 @@ classdef SimpleAprilTagLocalize < Command
         end
 
         function done = is_done(obj)
-            done = obj.tags_detected; % will return true if tags were detected, false otherwise
+            done = true; % this command will always be done after the first run of execute()
         end
 
         function cmd_end(obj)
